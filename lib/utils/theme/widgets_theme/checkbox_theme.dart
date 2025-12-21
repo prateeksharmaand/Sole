@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sole/utils/helpers/device_helpers.dart';
+import 'package:sole/utils/helpers/helper_functions.dart';
 import '../../constants/colors.dart';
 import '../../constants/sizes.dart';
 
@@ -13,12 +15,12 @@ class UCheckboxTheme {
       if (states.contains(WidgetState.selected)) {
         return UColors.white;
       } else {
-        return UColors.black;
+        return UColors.textSecondary;
       }
     }),
     fillColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return UColors.primary;
+        return UHelperFunctions.getColor("green");
       } else {
         return Colors.transparent;
       }

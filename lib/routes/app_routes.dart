@@ -1,24 +1,28 @@
 import 'package:get/get.dart';
 import 'package:sole/features/authentication/screens/onboarding/onboarding_screen.dart';
+import 'package:sole/features/dashboard/pages/communication_preferences/communication_preferences_screen.dart';
 import 'package:sole/loading.dart';
 import 'package:sole/routes/routes.dart';
+import '../features/dashboard/pages/add_expenses/add_expenses_screen.dart';
+import '../features/dashboard/pages/add_expenses/details_expenses_screen.dart';
+import '../features/dashboard/pages/assets/assets_screen.dart';
+import '../features/dashboard/pages/assets/new_assets_screen.dart';
+import '../features/dashboard/pages/balance_sheet/balance_sheet_screen.dart';
+import '../features/dashboard/pages/invoice_quote_branding/invoice_quote_branding_screen.dart';
+import '../features/dashboard/pages/notification/notification_screen.dart';
 
-class UAppRoutes{
+class UAppRoutes {
 
   static final screens = [
-     GetPage(name: URoutes.home, page: () => const LoadingScreen()),
-    // GetPage(name: URoutes.store, page: () => const StoreScreen(),),
-    // GetPage(name: URoutes.wishlist, page: () => const WishlistScreen(),),
-    // GetPage(name: URoutes.profile, page: () => const ProfileScreen(),),
-    // GetPage(name: URoutes.order, page: () => const OrderScreen(),),
-    // GetPage(name: URoutes.checkout, page: () => const CheckoutScreen(),),
-    // GetPage(name: URoutes.cart, page: () => const CartScreen(),),
-    // GetPage(name: URoutes.editProfile, page: () => const EditProfileScreen(),),
-    // GetPage(name: URoutes.userAddress, page: () => const AddressScreen(),),
-    // GetPage(name: URoutes.signup, page: () => const SignupScreen(),),
-    // GetPage(name: URoutes.verifyEmail, page: () => const VerifyEmailScreen(),),
-    // GetPage(name: URoutes.signIn, page: () => const LoginScreen(),),
-    // GetPage(name: URoutes.forgetPassword, page: () => const ForgetPasswordScreen(),),
-   GetPage(name: URoutes.onBoarding, page: () =>  OnboardingScreen()),
+    GetPage(name: URoutes.home, page: () => const LoadingScreen()),
+    GetPage(name: URoutes.onBoarding, page: () => OnboardingScreen()),
+    GetPage(name: URoutes.communicationScreen, page: () => CommunicationPreferencesScreen()),
+    GetPage(name: URoutes.assetsScreen, page: () => AssetsScreen()),
+    GetPage(name: URoutes.newAssetsScreen, page: () => NewAssetsScreen()),
+    GetPage(name: URoutes.balanceSheetScreen, page: () => BalanceSheetScreen()),
+    GetPage(name: URoutes.addExpensesScreen, page: () => AddExpensesScreen()),
+    GetPage(name: URoutes.detailsExpensesScreen, page: () => DetailsExpensesScreen()),
+    GetPage(name: URoutes.notificationScreen, page: () => NotificationScreen()),
+    GetPage(name: URoutes.invoiceQuoteBrandingScreen, page: () => InvoiceQuoteBrandingScreen()),
   ];
 }

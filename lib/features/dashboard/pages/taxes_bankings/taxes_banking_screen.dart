@@ -4,11 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/common/widgets/app_btn/app_btn.dart';
 import 'package:sole/common/widgets/appbar/appbar.dart';
 import 'package:sole/common/widgets/textfields/app_text_fields.dart';
-import 'package:sole/features/dashboard/communication_preferences/communication_preferences_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
+
+import '../communication_preferences/communication_preferences_screen.dart';
 
 class TaxesBankingScreen extends StatelessWidget {
   const TaxesBankingScreen({super.key});

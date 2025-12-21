@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-class UColors{
-
+class UColors {
   UColors._();
-
 
   // Primary Color
   static const Color primary = Color(0xFF4646E6);
@@ -20,6 +18,7 @@ class UColors{
   static const Color text1828 = Color(0xFF101828);
   static const Color textRed414B = Color(0xFFD9414B);
   static const Color textA4A6 = Color(0xFF9FA4A6);
+  static const Color text8C98 = Color(0xFF868C98);
   static const Color textWhite = Colors.white;
 
   // Background colors
@@ -33,6 +32,8 @@ class UColors{
   // Border colors
   static const Color borderPrimary = Color(0xFFD9D9D9);
   static const Color borderECF0 = Color(0xFFEAECF0);
+  static const Color borderEEF1 = Color(0xFFEAEEF1);
+  static const Color borderB3FF = Color(0xFFB3B3FF);
   static const Color borderBtn = Color(0xFFEAEEF1);
 
   // Error and validation colors
@@ -40,7 +41,6 @@ class UColors{
   static const Color success = Color(0xFF388E3C);
   static const Color warning = Color(0xFFF57C00);
   static const Color info = Color(0xFF1976D2);
-
   static const Color yellow = Color(0xFFFFE24B);
 
   // Neutral Shades
@@ -55,4 +55,10 @@ class UColors{
   static const Color iconA2B3 = Color(0xFF98A2B3);
   static const Color bg = Color(0xFFFAFAFA);
   static const Color whiteF9F9 = Color(0xFFF9F9F9);
+  static const Color greenFBF5 = Color(0xFFE8FBF5);
+  static const Color green7F67 = Color(0xFF297F67);
+  static const Color redEBEC = Color(0xFFFDEBEC);
+  static const Color red3137 = Color(0xFFA73137);
+  static const Color red4954 = Color(0xFFEE4954);
+  static const Color bgContainerF8FA = Color(0xFFF6F8FA);
 }

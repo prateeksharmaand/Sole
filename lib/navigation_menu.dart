@@ -5,11 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
-import 'features/dashboard/bashboard/dashboard_screen.dart';
-import 'features/dashboard/expense/expense_screen.dart';
-import 'features/dashboard/invoices/invoices_screen.dart';
-import 'features/dashboard/profile/profile_screen.dart';
-import 'features/dashboard/reports/reports_screen.dart';
+import 'features/dashboard/pages/bashboard/dashboard_screen.dart';
+import 'features/dashboard/pages/expense/expense_screen.dart';
+import 'features/dashboard/pages/invoices/invoices_screen.dart';
+import 'features/dashboard/pages/profile/profile_screen.dart';
+import 'features/dashboard/pages/reports/reports_screen.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});

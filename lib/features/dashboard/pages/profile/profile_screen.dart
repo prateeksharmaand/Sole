@@ -3,15 +3,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/features/authentication/screens/login/login_screen.dart';
-import 'package:sole/features/dashboard/communication_preferences/communication_preferences_screen.dart';
-import 'package:sole/features/dashboard/profile/widgets/bussiness_information_card.dart';
-import 'package:sole/features/dashboard/subscriptions/subscriptions_screen.dart';
-import 'package:sole/features/dashboard/taxes_bankings/taxes_banking_screen.dart';
+import 'package:sole/features/dashboard/pages/profile/widgets/bussiness_information_card.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
-import 'package:sole/utils/helpers/device_helpers.dart';
-import 'package:sole/utils/helpers/helper_functions.dart';
+import '../accountant/accountant_screen.dart';
+import '../communication_preferences/communication_preferences_screen.dart';
+import '../profile_branding/profile_branding_screen.dart';
+import '../subscriptions/subscriptions_screen.dart';
+import '../taxes_bankings/taxes_banking_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -108,7 +108,9 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: USizes.defaultSpace20),
+                      margin: EdgeInsets.symmetric(
+                        vertical: USizes.defaultSpace20,
+                      ),
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: UColors.white,
@@ -119,34 +121,46 @@ class ProfileScreen extends StatelessWidget {
                           IconText(
                             icon: UImages.personIcon,
                             text: "Profile & Branding",
+                            onTap: () {
+                              Get.to(() => ProfileBrandingScreen());
+                            },
                           ),
-                          IconText(icon: UImages.cardIcon, text: "Taxes & Banking",onTap: (){
-                            Get.to(()=>TaxesBankingScreen());
-                          }),
+                          IconText(
+                            icon: UImages.cardIcon,
+                            text: "Taxes & Banking",
+                            onTap: () {
+                              Get.to(() => TaxesBankingScreen());
+                            },
+                          ),
                           IconText(
                             icon: UImages.percentageIcon,
                             text: "Accountant",
+                            onTap: () {
+                              Get.to(() => AccountantScreen());
+                            },
                           ),
                           IconText(
                             icon: UImages.calendarIcon,
                             text: "Subscriptions",
-                            onTap: (){
-                              Get.to(()=>SubscriptionsScreen());
+                            onTap: () {
+                              Get.to(() => SubscriptionsScreen());
                             },
                           ),
                           IconText(
                             icon: UImages.communicationIcon,
                             text: "Communication Preferences",
                             isDivider: false,
-                            onTap: (){
-                              Get.to(()=>CommunicationPreferencesScreen());
+                            onTap: () {
+                              Get.to(() => CommunicationPreferencesScreen());
                             },
                           ),
                         ],
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: USizes.defaultSpace20),
+                      margin: EdgeInsets.symmetric(
+                        vertical: USizes.defaultSpace20,
+                      ),
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: UColors.white,
@@ -154,7 +168,10 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          IconText(icon: UImages.headphoneIcon, text: "Support"),
+                          IconText(
+                            icon: UImages.headphoneIcon,
+                            text: "Support",
+                          ),
                           IconText(
                             icon: UImages.logoutIcon,
                             text: "Logout",
@@ -182,35 +199,35 @@ class ProfileScreen extends StatelessWidget {
 class CommonContainer extends StatelessWidget {
   final String heading;
   final String text;
-  const CommonContainer({
-    super.key, required this.heading, required this.text,
-  });
+  const CommonContainer({super.key, required this.heading, required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10,horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       decoration: BoxDecoration(
         color: UColors.whiteF9F9,
-        borderRadius: BorderRadius.circular(8)
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Text(
-        heading,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w400,
-          color:  UColors.textSecondary,
-        )),
-        Text(
-        text,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color:  UColors.textPrimary,
-        )),
+          Text(
+            heading,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: UColors.textSecondary,
+            ),
+          ),
+          Text(
+            text,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: UColors.textPrimary,
+            ),
+          ),
         ],
       ),
     );

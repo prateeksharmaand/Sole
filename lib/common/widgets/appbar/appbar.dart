@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../utils/constants/colors.dart';
+import '../../../utils/constants/images.dart';
 import '../../../utils/helpers/device_helpers.dart';
 
 class UAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -12,30 +15,30 @@ class UAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leadingOnPressed,
     this.showDivider = true,
+    this.centerTitle = false, this.backgroundColor,
   });
 
   final Widget? title;
   final bool showBackArrow;
+  final bool? centerTitle;
   final IconData? leadingIcon;
   final List<Widget>? actions;
   final VoidCallback? leadingOnPressed;
   final bool showDivider;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
       elevation: 0,
-      backgroundColor: UColors.white,
-
+      backgroundColor: backgroundColor ?? UColors.white,
+       centerTitle: centerTitle,
       /// Leading
       leading: showBackArrow
           ? IconButton(
         onPressed: Get.back,
-        icon: Icon(
-          Icons.arrow_back_outlined,
-          color: UColors.textSecondary,
-        ),
+        icon: SvgPicture.asset(UImages.arrowLeft),
       )
           : leadingIcon != null
           ? IconButton(

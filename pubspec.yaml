@@ -41,6 +41,8 @@ dependencies:
   google_fonts: ^6.3.2
   smooth_page_indicator: ^1.2.1
   flutter_svg: ^2.2.3
+  flutter_dotted_border: ^0.0.2
+  table_calendar: ^3.2.0
 
 dev_dependencies:
   flutter_test:

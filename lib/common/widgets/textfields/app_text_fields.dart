@@ -339,11 +339,12 @@ class _UTextField2State extends State<UTextField2> {
           Text(
             widget.titleText!,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              color: Theme.of(context).textTheme.bodySmall!.color!,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: UColors.textSecondary,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 12),
         ],
         SizedBox(
           width: widget.width,
@@ -371,61 +372,91 @@ class _UTextField2State extends State<UTextField2> {
             autovalidateMode: widget.autoValidate!
                 ? AutovalidateMode.onUserInteraction
                 : AutovalidateMode.disabled,
-              decoration: InputDecoration(
-                filled: false, // ❗ underline ke liye false
-                counterText: "",
-                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: InputDecoration(
+              filled: false,
+              counterText: "",
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
 
-                /// Floating Label
-                labelText: widget.labelText,
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-                labelStyle: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  color: UColors.textSecondary,
-                ),
+              /// Floating Label
+              labelText: widget.labelText,
+              floatingLabelBehavior: FloatingLabelBehavior.auto,
+              labelStyle: GoogleFonts.plusJakartaSans(
+                fontSize: 14,
+                color: UColors.textSecondary,
+              ),
+              floatingLabelStyle: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                color: UColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
 
-                floatingLabelStyle: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: UColors.primary,
-                  fontWeight: FontWeight.w500,
-                ),
+              /// Hint
+              hintText: widget.hintText,
+              hintStyle: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                color: UColors.textSecondary.withOpacity(0.6),
+              ),
 
-                /// Hint
-                hintText: widget.hintText,
-                hintStyle: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: UColors.textSecondary.withOpacity(0.6),
-                ),
+              /// 🔹 PREFIX (same as UTextField)
+              prefixIcon: widget.prefixWidget ??
+                  (widget.prefix == null
+                      ? null
+                      : Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      top: 10,
+                      bottom: 10,
+                      right: 6,
+                    ),
+                    child: SvgPicture.asset(
+                      widget.prefix!,
+                      width: 22,
+                      height: 22,
+                      colorFilter: ColorFilter.mode(
+                        widget.prefixColor!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  )),
+              prefixIconConstraints:
+              const BoxConstraints(minHeight: 15, minWidth: 15),
 
-                /// Underline Borders
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: UColors.borderBtn,
-                    width: 1,
-                  ),
-                ),
+              /// 🔹 SUFFIX (same as UTextField)
+              suffixIcon: widget.suffix == null
+                  ? null
+                  : Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: widget.suffix,
+              ),
+              suffixIconConstraints:
+              const BoxConstraints(minHeight: 20, minWidth: 20),
 
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: UColors.primary,
-                    width: 2,
-                  ),
-                ),
-
-                errorBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                    width: 1,
-                  ),
-                ),
-
-                focusedErrorBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.red,
-                    width: 2,
-                  ),
+              /// Underline Borders
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: UColors.borderBtn,
+                  width: 1,
                 ),
               ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: UColors.primary,
+                  width: 2,
+                ),
+              ),
+              errorBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 1,
+                ),
+              ),
+              focusedErrorBorder: const UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.red,
+                  width: 2,
+                ),
+              ),
+            ),
           ),
         ),
       ],

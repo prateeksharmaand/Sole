@@ -18,9 +18,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: UAppTheme.lightTheme,
       darkTheme: UAppTheme.darkTheme,
-
       getPages: UAppRoutes.screens,
-
       initialBinding: UBindings(),
       home: SplashScreen()
     );
