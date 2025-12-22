@@ -107,7 +107,11 @@ class AccountantBookkeeperTab extends StatelessWidget {
                 SizedBox(height: USizes.md),
                 UTextField2(
                   hintText: "eg., boookeeper@exaple.com",
-                  suffix: Icon(Icons.percent_outlined),
+                  suffix: Column(
+                    children: [
+                      Icon(Icons.percent_outlined,size: 17),
+                    ],
+                  ),
                 ),
               ],
             ),

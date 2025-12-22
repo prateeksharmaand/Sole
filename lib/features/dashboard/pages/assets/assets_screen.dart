@@ -28,16 +28,16 @@ class AssetsScreen extends GetView<AssetsController> {
         backgroundColor: UColors.primary,
         shape: const CircleBorder(),
         onPressed: () {
-          Get.bottomSheet(
-            const AddExpenseBottomSheet(),
-            backgroundColor: Colors.transparent,
-            isScrollControlled: true,
-          );
+          Get.toNamed(URoutes.newAssetsScreen);
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left:USizes.defaultSpace20,right:USizes.defaultSpace20,top:USizes.defaultSpace20),
+        padding: const EdgeInsets.only(
+          left: USizes.defaultSpace20,
+          right: USizes.defaultSpace20,
+          top: USizes.defaultSpace20,
+        ),
         child: Column(
           children: [
             Row(
@@ -149,7 +149,6 @@ class UCommonSearch extends StatelessWidget {
   }
 }
 
-
 class AddExpenseBottomSheet extends StatelessWidget {
   const AddExpenseBottomSheet({super.key});
 
@@ -170,11 +169,15 @@ class AddExpenseBottomSheet extends StatelessWidget {
             children: [
               Text(
                 'Add Expenses',
-                style: GoogleFonts.plusJakartaSans(fontSize: 18, fontWeight: FontWeight.w500,color: UColors.textPrimary),
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: UColors.textPrimary,
+                ),
               ),
               InkWell(
                 onTap: () => Navigator.pop(context),
-                child: const Icon(Icons.close,color: UColors.textSecondary),
+                child: const Icon(Icons.close, color: UColors.textSecondary),
               ),
             ],
           ),
@@ -204,6 +207,7 @@ class AddExpenseBottomSheet extends StatelessWidget {
       ),
     );
   }
+
   /// Reusable Tile
   Widget _optionTile({
     required String icon,
@@ -234,10 +238,10 @@ class AddExpenseBottomSheet extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style:  GoogleFonts.plusJakartaSans(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: UColors.textPrimary
+                      color: UColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -246,7 +250,7 @@ class AddExpenseBottomSheet extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       color: UColors.textSecondary,
-                      fontWeight: FontWeight.w400
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
@@ -256,7 +260,8 @@ class AddExpenseBottomSheet extends StatelessWidget {
             /// Arrow
             const Icon(
               Icons.arrow_forward_ios_rounded,
-              color:UColors.textSecondary,size: 19
+              color: UColors.textSecondary,
+              size: 19,
             ),
           ],
         ),
@@ -264,4 +269,3 @@ class AddExpenseBottomSheet extends StatelessWidget {
     );
   }
 }
-

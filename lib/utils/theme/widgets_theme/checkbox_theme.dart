@@ -20,7 +20,7 @@ class UCheckboxTheme {
     }),
     fillColor: WidgetStateProperty.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
-        return UHelperFunctions.getColor("green");
+        return Colors.green;
       } else {
         return Colors.transparent;
       }

@@ -312,17 +312,27 @@ class DatePickerSheet extends StatelessWidget {
               headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
+
                 /// Header height control
                 headerPadding: const EdgeInsets.symmetric(vertical: 8),
-                headerMargin: const EdgeInsets.only(bottom: 10,top: 10),
+                headerMargin: const EdgeInsets.only(bottom: 10, top: 10),
 
                 decoration: BoxDecoration(
                   color: UColors.bgContainerF8FA,
                   borderRadius: BorderRadius.circular(8),
                 ),
+
                 /// Custom icons
-                leftChevronIcon: SvgPicture.asset(UImages.arrowLeftIconTable,width: 40,height: 40),
-                rightChevronIcon: SvgPicture.asset(UImages.arrowRightIconTable,width: 40,height: 40),
+                leftChevronIcon: SvgPicture.asset(
+                  UImages.arrowLeftIconTable,
+                  width: 40,
+                  height: 40,
+                ),
+                rightChevronIcon: SvgPicture.asset(
+                  UImages.arrowRightIconTable,
+                  width: 40,
+                  height: 40,
+                ),
 
                 titleTextStyle: GoogleFonts.plusJakartaSans(
                   fontSize: 14,

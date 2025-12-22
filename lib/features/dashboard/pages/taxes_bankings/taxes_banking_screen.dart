@@ -63,7 +63,11 @@ class TaxesBankingScreen extends StatelessWidget {
                   SizedBox(height: USizes.md),
                   UTextField2(
                     hintText: "Rate",
-                    suffix: Icon(Icons.percent_outlined),
+                    suffix: Column(
+                      children: [
+                        Icon(Icons.percent_outlined,size: 18),
+                      ],
+                    ),
                   ),
                   SizedBox(height: USizes.xl),
                   CommonTextSubTextAndSwitch(
@@ -163,7 +167,7 @@ class TaxesBankingScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: USizes.xl),
-            Divider(color: UColors.divider, thickness: 20),
+            Divider(color: UColors.divider, thickness: 10),
             SizedBox(height: USizes.md),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: USizes.defaultSpace20),
@@ -236,7 +240,7 @@ class TaxesBankingScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: USizes.xl),
-            Divider(color: UColors.divider, thickness: 20),
+            Divider(color: UColors.divider, thickness: 10),
             SizedBox(height: USizes.md),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: USizes.defaultSpace20),

@@ -65,7 +65,8 @@ class _UDropdownFieldState extends State<UDropdownField> {
           const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           hintText: widget.hintText,
           hintStyle: GoogleFonts.plusJakartaSans(
-            fontSize: 13,
+            fontSize: 14,
+            fontWeight: FontWeight.w300,
             color: UColors.textSecondary,
           ),
           border: OutlineInputBorder(
@@ -100,6 +101,7 @@ class _UDropdownFieldState extends State<UDropdownField> {
               item,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
+                fontWeight: FontWeight.w500,
                 color: UColors.textPrimary,
               ),
             ),

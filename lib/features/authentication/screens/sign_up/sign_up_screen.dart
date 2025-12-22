@@ -19,37 +19,6 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomSheet: Padding(
-        padding: EdgeInsets.only(
-          bottom: UDeviceHelper.getBottomNavigationBarHeight(),
-        ),
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: "Already have an account? ",
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              color: UColors.text5866,
-              fontWeight: FontWeight.w400,
-            ),
-            children: [
-              TextSpan(
-                text: "Login",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: UColors.text46E6,
-                  fontWeight: FontWeight.w500,
-                  decoration: TextDecoration.underline,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    Get.to(() => LoginScreen());
-                  },
-              ),
-            ],
-          ),
-        ),
-      ),
       body: Padding(
         padding: EdgeInsets.only(
           left: USizes.defaultSpace20,
@@ -180,6 +149,66 @@ class SignUpScreen extends StatelessWidget {
                       print(value);
                     },
                   ),
+                  SizedBox(height: USizes.md),
+                  Text(
+                    "Referral Code (Optional)",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      color: UColors.text4054,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: USizes.sm * 1.5),
+                  UDropdownField(
+                    hintText: "Enter referral code",
+                    items: const [
+                      'Spreadsheets',
+                      'Xero',
+                      'QuickBooks',
+                      'Zoho Books',
+                    ],
+                    prefixWidget: Padding(
+                      padding: EdgeInsets.only(left: USizes.sm * 1.5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [SvgPicture.asset(UImages.userIcon)],
+                      ),
+                    ),
+                    onChanged: (value) {
+                      print(value);
+                    },
+                  ),
+                  SizedBox(height: USizes.md),
+                  Text(
+                    "Coupon Code (Optional",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      color: UColors.text4054,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: USizes.sm * 1.5),
+                  UDropdownField(
+                    hintText: "Enter coupon code",
+                    items: const [
+                      'Spreadsheets',
+                      'Xero',
+                      'QuickBooks',
+                      'Zoho Books',
+                    ],
+                    prefixWidget: Padding(
+                      padding: EdgeInsets.only(left: USizes.sm * 1.5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [SvgPicture.asset(UImages.ticketIcon)],
+                      ),
+                    ),
+                    onChanged: (value) {
+                      print(value);
+                    },
+                  ),
                   SizedBox(height: USizes.lg),
                   UButton(onPressed: () {
                     Get.offAll(()=>LoginScreen());
@@ -219,6 +248,37 @@ class SignUpScreen extends StatelessWidget {
                     label: "Sole for Accountants & Bookeepers",
                     textColor: UColors.primary,
                   ),
+                  SizedBox(height: USizes.lg),
+                  Align(
+                    alignment: Alignment.center,
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: "Already have an account? ",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          color: UColors.text5866,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "Login",
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12,
+                              color: UColors.text46E6,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Get.to(() => LoginScreen());
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   SizedBox(
                     height: UDeviceHelper.getBottomNavigationBarHeight(),
                   ),

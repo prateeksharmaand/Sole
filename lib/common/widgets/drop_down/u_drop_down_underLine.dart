@@ -52,9 +52,10 @@ class UDropDown<T> extends StatelessWidget {
             hint: hint != null ? Text(hint!) : null,
             items: items,
             onChanged: onChanged,
+
+            style: GoogleFonts.plusJakartaSans(fontSize: 14,color: UColors.textPrimary),
             icon: Icon(Icons.keyboard_arrow_down_outlined),
             decoration: const InputDecoration(
-              isDense: true,
               contentPadding: EdgeInsets.zero,
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey),

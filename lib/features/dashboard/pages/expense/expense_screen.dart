@@ -52,6 +52,7 @@ class ExpenseScreen extends GetView<ExpenseController> {
               ],
             ),
             SizedBox(height: USizes.defaultSpace20),
+
             /// header Container Data
             Container(
               width: double.infinity,
@@ -63,8 +64,11 @@ class ExpenseScreen extends GetView<ExpenseController> {
               child: Column(
                 children: [
                   Obx(
-                        () => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14,vertical: 0),
+                    () => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 0,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(28),
                         border: Border.all(color: UColors.borderBtn),
@@ -73,16 +77,19 @@ class ExpenseScreen extends GetView<ExpenseController> {
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: controller.selectedMonth.value,
-                          icon: const Icon(Icons.keyboard_arrow_down,color: UColors.textSecondary),
+                          icon: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: UColors.textSecondary,
+                          ),
                           items: controller.months.map((month) {
                             return DropdownMenuItem<String>(
                               value: month,
                               child: Text(
                                 month,
-                                style:  GoogleFonts.plusJakartaSans(
+                                style: GoogleFonts.plusJakartaSans(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
-                                  color: UColors.textSecondary
+                                  color: UColors.textSecondary,
                                 ),
                               ),
                             );
@@ -97,33 +104,62 @@ class ExpenseScreen extends GetView<ExpenseController> {
                     ),
                   ),
                   SizedBox(height: USizes.md),
-                  CommonTextPrizePercent(text: 'Total Expenses', prize: '\$512k', percent: '+2.5%', isProfit: true),
+                  CommonTextPrizePercent(
+                    text: 'Total Expenses',
+                    prize: '\$512k',
+                    percent: '+2.5%',
+                    isProfit: true,
+                  ),
                   SizedBox(height: USizes.md),
                   Divider(color: UColors.divider),
                   SizedBox(height: USizes.md),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      CommonTextPrizePercent(text: 'Reconciled Expenses', prize: '\$2,932', percent: '+2.5%', isProfit: true),
-                      CommonTextPrizePercent(text: 'Pending Expenses', prize: '\$2,932', percent: '-8.5%', isProfit: false)
+                      CommonTextPrizePercent(
+                        text: 'Reconciled Expenses',
+                        prize: '\$2,932',
+                        percent: '+2.5%',
+                        isProfit: true,
+                      ),
+                      CommonTextPrizePercent(
+                        text: 'Pending Expenses',
+                        prize: '\$2,932',
+                        percent: '-8.5%',
+                        isProfit: false,
+                      ),
                     ],
                   ),
                 ],
               ),
             ),
             SizedBox(height: USizes.defaultSpace20),
+
             /// search and filter
             Row(
               children: [
                 UCommonSearch(),
                 SizedBox(width: USizes.sm),
                 GestureDetector(
-                  onTap: () {},
-                  child: SvgPicture.asset(UImages.filterIcon),
+                  onTap: () {
+                    Get.put(ExpenseController());
+
+                    Get.bottomSheet(
+                      ExpenseFilterBottomSheet(),
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                    );
+                  },
+                  child: SvgPicture.asset(
+                    UImages.filterIcon,
+                    width: 45,
+                    height: 48,
+                  ),
                 ),
               ],
             ),
             SizedBox(height: USizes.defaultSpace20),
+
             /// Bottom List Details
             Expanded(
               child: Container(
@@ -198,7 +234,6 @@ class ExpenseScreen extends GetView<ExpenseController> {
                               color: UColors.textPrimary,
                             ),
                           ),
-
                         ],
                       ),
                     );
@@ -219,7 +254,11 @@ class CommonTextPrizePercent extends StatelessWidget {
   final String percent;
   final bool isProfit;
   const CommonTextPrizePercent({
-    super.key, required this.text, required this.prize, required this.percent, required this.isProfit,
+    super.key,
+    required this.text,
+    required this.prize,
+    required this.percent,
+    required this.isProfit,
   });
 
   @override
@@ -249,18 +288,22 @@ class CommonTextPrizePercent extends StatelessWidget {
           children: [
             Container(
               margin: EdgeInsets.only(right: USizes.sm),
-              padding: EdgeInsets.symmetric(horizontal:USizes.xs,vertical: USizes.xs/2),
+              padding: EdgeInsets.symmetric(
+                horizontal: USizes.xs,
+                vertical: USizes.xs / 2,
+              ),
               decoration: BoxDecoration(
                 color: isProfit ? UColors.greenFBF5 : UColors.redEBEC,
-                borderRadius: BorderRadius.circular(4)
+                borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                  percent,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 11,
-                    color: isProfit ? UColors.green7F67 : UColors.red3137,
-                  ))
+                percent,
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 11,
+                  color: isProfit ? UColors.green7F67 : UColors.red3137,
+                ),
+              ),
             ),
             Text(
               "vs last month",
@@ -271,8 +314,187 @@ class CommonTextPrizePercent extends StatelessWidget {
               ),
             ),
           ],
-        )
+        ),
       ],
+    );
+  }
+}
+
+class ExpenseFilterBottomSheet extends StatelessWidget {
+  ExpenseFilterBottomSheet({super.key});
+
+  final ExpenseController controller = Get.find<ExpenseController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// HEADER
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Filter",
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: UColors.textPrimary,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Get.back(),
+                child: const Icon(Icons.close),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          /// SORT BY
+          const Text("Sort by"),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            items: controller.months
+                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) controller.changeMonth(value);
+            },
+            decoration: const InputDecoration(
+              hintText: "Sort by",
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          /// PRICE RANGE
+          const Text("Price"),
+          Obx(
+            () => RangeSlider(
+              min: 0,
+              max: 1000,
+              activeColor: UColors.primary,
+              inactiveColor: UColors.textSecondary.withValues(alpha: .4),
+              values: RangeValues(
+                controller.minPrice.value,
+                controller.maxPrice.value,
+              ),
+              onChanged: (value) {
+                controller.minPrice.value = value.start;
+                controller.maxPrice.value = value.end;
+              },
+            ),
+          ),
+          Obx(
+            () => Text(
+              "\$ ${controller.minPrice.value.toInt()} - \$ ${controller.maxPrice.value.toInt()}",
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          /// DATE RANGE (UI only)
+          const Text("Date Range"),
+          const SizedBox(height: 8),
+          TextField(
+            readOnly: true,
+            decoration: const InputDecoration(
+              hintText: "DD / MM / YYYY",
+              prefixIcon: Icon(Icons.calendar_today_outlined),
+              suffixIcon: Icon(
+                Icons.arrow_drop_down_sharp,
+                color: Colors.black,
+              ),
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          /// CATEGORY
+          const Text("Category"),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            items: const [
+              DropdownMenuItem(value: "Food", child: Text("Food")),
+              DropdownMenuItem(value: "Travel", child: Text("Travel")),
+              DropdownMenuItem(value: "Office", child: Text("Office")),
+            ],
+            onChanged: (value) {},
+            decoration: const InputDecoration(
+              hintText: "Select category",
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          /// SUPPLIER
+          const Text("Supplier"),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
+            items: const [
+              DropdownMenuItem(value: "Amazon", child: Text("Amazon")),
+              DropdownMenuItem(value: "Flipkart", child: Text("Flipkart")),
+            ],
+            onChanged: (value) {},
+            decoration: const InputDecoration(
+              hintText: "Select supplier",
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          /// PAID BY CASH
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text("Paid by Cash"),
+                Switch(
+                  value: controller.paidByCash.value,
+                  onChanged: (value) {
+                    controller.paidByCash.value = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          /// BUTTONS
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: controller.resetFilter,
+                  child: const Text("Reset"),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back(); // Apply filter
+                  },
+                  child: const Text("Apply"),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

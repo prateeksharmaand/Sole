@@ -14,6 +14,8 @@ class UImages{
   static const String mailIcon = "assets/icons/mail.svg";
   static const String passwordIcon = "assets/icons/password.svg";
   static const String fourBoxIcon = "assets/icons/four_box.svg";
+  static const String userIcon = "assets/icons/users.svg";
+  static const String ticketIcon = "assets/icons/ticket.svg";
 
   // logos
   static const String facebookIcon = "assets/icons/fb.svg";

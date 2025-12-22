@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/common/widgets/appbar/appbar.dart';
 import 'package:sole/features/dashboard/pages/accountant/widgets/account_sharing_tab.dart';
@@ -19,7 +20,9 @@ class AccountantScreen extends StatelessWidget {
           showBackArrow: true,
           actions: [
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.back();
+              },
               child: Text(
                 "SAVE & UPDATE",
                 style: GoogleFonts.inter(

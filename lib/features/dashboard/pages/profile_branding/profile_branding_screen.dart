@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotted_border/flutter_dotted_border.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/common/widgets/appbar/appbar.dart';
 import 'package:sole/common/widgets/textfields/app_text_fields.dart';
@@ -17,7 +18,9 @@ class ProfileBrandingScreen extends StatelessWidget {
     return Scaffold(
       appBar: UAppBar(title: Text("Profile & Branding"), showBackArrow: true,
       actions: [
-        TextButton(onPressed: (){}, child:  Text(
+        TextButton(onPressed: (){
+          Get.back();
+        }, child:  Text(
           "SAVE",
           style: GoogleFonts.inter(
             fontSize: 14,
