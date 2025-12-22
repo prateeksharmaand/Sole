@@ -4,7 +4,7 @@ class DashboardController extends GetxController {
   static DashboardController get instance => Get.find();
 
   // UI state
-  final RxBool isFirstTimeOpen = true.obs; // show onboarding first time
+  final RxBool isFirstTimeOpen = false.obs; // show onboarding first time
   final RxBool isFabOpen = false.obs; // floating action menu state
 
   // Observable variables for UI updates

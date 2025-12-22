@@ -41,6 +41,7 @@ dependencies:
   google_fonts: ^6.3.2
   smooth_page_indicator: ^1.2.1
   flutter_svg: ^2.2.3
+  iconsax: ^0.0.8
 
 dev_dependencies:
   flutter_test:
