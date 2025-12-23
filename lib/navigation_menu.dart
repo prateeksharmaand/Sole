@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
+import 'features/dashboard/dashboard/dashboard_screen.dart';
 import 'features/dashboard/pages/bashboard/dashboard_screen.dart';
 import 'features/dashboard/pages/expense/expense_screen.dart';
 import 'features/dashboard/pages/invoices/invoices_screen.dart';
@@ -23,7 +24,7 @@ class NavigationMenu extends StatelessWidget {
       body: Obx(() => controller.screens[controller.selectedIndex.value]),
 
       bottomNavigationBar: Obx(
-            () => NavigationBar(
+        () => NavigationBar(
           elevation: 0,
           height: 72,
           backgroundColor: dark ? UColors.dark : UColors.light,
@@ -34,22 +35,20 @@ class NavigationMenu extends StatelessWidget {
           },
 
           /// 🔹 TEXT COLOR CONTROL
-          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                (states) {
-              if (states.contains(WidgetState.selected)) {
-                return GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: UColors.primary, // 🔵 selected text
-                );
-              }
+          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+            if (states.contains(WidgetState.selected)) {
               return GoogleFonts.plusJakartaSans(
                 fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: UColors.textSecondary, // ⚪ unselected text
+                fontWeight: FontWeight.w500,
+                color: UColors.primary, // 🔵 selected text
               );
-            },
-          ),
+            }
+            return GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: UColors.textSecondary, // ⚪ unselected text
+            );
+          }),
 
           destinations: [
             _navItem(
@@ -93,18 +92,10 @@ class NavigationMenu extends StatelessWidget {
       label: label,
 
       /// 🔹 Unselected SVG
-      icon: SvgPicture.asset(
-        unSelectedIcon,
-        height: 24,
-        width: 24,
-      ),
+      icon: SvgPicture.asset(unSelectedIcon, height: 24, width: 24),
 
       /// 🔹 Selected SVG
-      selectedIcon: SvgPicture.asset(
-        selectedIcon,
-        height: 24,
-        width: 24,
-      ),
+      selectedIcon: SvgPicture.asset(selectedIcon, height: 24, width: 24),
     );
   }
 }

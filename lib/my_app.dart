@@ -5,8 +5,6 @@ import 'package:sole/utils/theme/theme.dart';
 import 'bindings/bindings.dart';
 import 'features/authentication/screens/splash/splash_screen.dart';
 
-
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
