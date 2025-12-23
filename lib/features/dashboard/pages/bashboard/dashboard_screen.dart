@@ -5,8 +5,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
-
-import '../../../utils/constants/sizes.dart';
+import '../../../../utils/constants/sizes.dart';
+import '../../bashboard/dashboard_controller.dart';
 import 'dashboard_controller.dart';
 
 class DashboardScreen extends GetView<DashboardController> {

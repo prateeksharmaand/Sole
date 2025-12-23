@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sole/features/dashboard/bashboard/dashboard_screen.dart';
 import 'package:sole/routes/app_routes.dart';
 import 'package:sole/utils/theme/theme.dart';
 import 'bindings/bindings.dart';
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
       darkTheme: UAppTheme.darkTheme,
       getPages: UAppRoutes.screens,
       initialBinding: UBindings(),
-      home: DashboardScreen()
+      home: SplashScreen()
     );
   }
 }
