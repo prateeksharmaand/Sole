@@ -8,6 +8,7 @@ import '../features/dashboard/controllers/communication_preferences_controller.d
 import '../features/dashboard/controllers/expense_controller.dart';
 import '../features/dashboard/controllers/notification_controller.dart';
 import '../features/dashboard/controllers/reports_controller.dart';
+import 'package:sole/features/dashboard/bashboard/dashboard_controller.dart';
 
 
 class UBindings extends Bindings{
@@ -23,6 +24,9 @@ class UBindings extends Bindings{
      Get.lazyPut<AddExpensesController>(() => AddExpensesController(),fenix: true);
      Get.lazyPut<NotificationController>(() => NotificationController(),fenix: true);
 
+     Get.put(AuthController());
+     Get.put(OnboardingController());
+     Get.put(DashboardController());
   }
 
 }

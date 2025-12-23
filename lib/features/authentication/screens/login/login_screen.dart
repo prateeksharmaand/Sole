@@ -142,7 +142,8 @@ class LoginScreen extends StatelessWidget {
                   ),
                   SizedBox(height: USizes.lg),
                   UButton(onPressed: () {
-                    Get.offAll(()=>NavigationMenu());
+                    Get.offAll(
+                            ()=>NavigationMenu());
                   }, label: "Sign in"),
                   SizedBox(height: USizes.lg),
                   Row(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/theme/widgets_theme/appbar_theme.dart';
 import 'package:sole/utils/theme/widgets_theme/bottom_sheet_theme.dart';
@@ -16,7 +17,7 @@ class UAppTheme {
 
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Nunito',
+    fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
     brightness: Brightness.light,
     primaryColor: UColors.primary,
     disabledColor: UColors.grey,
@@ -34,7 +35,7 @@ class UAppTheme {
 
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    fontFamily: 'Nunito',
+    fontFamily: GoogleFonts.plusJakartaSans().fontFamily,
     brightness: Brightness.dark,
     primaryColor: UColors.primary,
     disabledColor: UColors.grey,
