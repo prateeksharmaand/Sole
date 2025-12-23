@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:sole/features/dashboard/transactions/transactions_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
@@ -212,6 +212,8 @@ class DashboardScreen extends GetView<DashboardController> {
                                 context,
                                 icon: UImages.bankIcon,
                                 label: 'Transactions',
+                                onTap: () =>
+                                    Get.to(() => const TransactionsScreen()),
                               ),
                               _buildActionItem(
                                 context,
@@ -681,36 +683,53 @@ class DashboardScreen extends GetView<DashboardController> {
       floatingActionButton: Obx(() {
         return Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             if (controller.isFabOpen.value) ...[
-              _fabMini(
-                context,
-                Iconsax.document_text,
-                'Add Invoice',
-                const Color(0xFF5B7FFF),
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: dark ? UColors.dark : UColors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: UColors.black.withValues(alpha: 0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _fabMini(
+                      context,
+                      UImages.documentIcon,
+                      'Add Invoice',
+                      const Color(0xFF5B7FFF),
+                    ),
+                    _fabMini(
+                      context,
+                      UImages.documentIcon2,
+                      'Add Quote',
+                      const Color(0xFF9B7FFF),
+                    ),
+                    _fabMini(
+                      context,
+                      UImages.dollarIcon,
+                      'Add Expense',
+                      const Color(0xFF4FC3F7),
+                    ),
+                    _fabMini(
+                      context,
+                      UImages.profileCircleIcon,
+                      'Add Contact',
+                      const Color(0xFFFF9F7F),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              _fabMini(
-                context,
-                Iconsax.clipboard_text,
-                'Add Quote',
-                const Color(0xFF9B7FFF),
-              ),
-              const SizedBox(height: 12),
-              _fabMini(
-                context,
-                Iconsax.dollar_circle,
-                'Add Expense',
-                const Color(0xFF4FC3F7),
-              ),
-              const SizedBox(height: 12),
-              _fabMini(
-                context,
-                Iconsax.user,
-                'Add Contact',
-                const Color(0xFFFF9F7F),
-              ),
-              const SizedBox(height: 16),
             ],
             FloatingActionButton(
               onPressed: controller.toggleFab,
@@ -730,47 +749,45 @@ class DashboardScreen extends GetView<DashboardController> {
 
   Widget _fabMini(
     BuildContext context,
-    IconData icon,
+    String iconPath,
     String label,
     Color iconBackgroundColor,
   ) {
-    final dark = UHelperFunctions.isDarkMode(context);
     return GestureDetector(
       onTap: () {
-        // placeholder action: close menu for now
         controller.toggleFab();
         // TODO: navigate to add screens
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: dark ? UColors.dark : UColors.white,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: UColors.black.withValues(alpha: 0.08),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: iconBackgroundColor.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, size: 20, color: iconBackgroundColor),
+              child: SvgPicture.asset(
+                iconPath,
+                height: 18,
+                width: 18,
+                colorFilter: ColorFilter.mode(
+                  iconBackgroundColor,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
             const SizedBox(width: 12),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+            SizedBox(
+              width: 100,
+              child: Text(
+                label,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+              ),
             ),
           ],
         ),
@@ -1037,30 +1054,39 @@ class DashboardScreen extends GetView<DashboardController> {
     BuildContext context, {
     required String icon,
     required String label,
+    VoidCallback? onTap,
   }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            color: UColors.primaryLightE0FF.withValues(alpha: 0.5),
-            shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              color: UColors.primaryLightE0FF.withValues(alpha: 0.5),
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(12),
+            child: SvgPicture.asset(
+              icon,
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(UColors.primary, BlendMode.srcIn),
+            ),
           ),
-          padding: const EdgeInsets.all(12),
-          child: SvgPicture.asset(icon, height: 20, width: 20),
-        ),
-        const SizedBox(height: USizes.xs),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: UColors.textPrimary,
-            fontWeight: FontWeight.w500,
+          const SizedBox(height: USizes.xs),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: UColors.textPrimary,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
