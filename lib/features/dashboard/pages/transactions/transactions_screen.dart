@@ -7,6 +7,7 @@ import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
 import 'transactions_controller.dart';
 import 'transaction_detail_screen.dart';
+import 'add_transaction_screen.dart';
 
 class TransactionsScreen extends GetView<TransactionsController> {
   const TransactionsScreen({super.key});
@@ -89,7 +90,7 @@ class TransactionsScreen extends GetView<TransactionsController> {
                     ),
                   ),
                   child: SvgPicture.asset(
-                    UImages.listIcon,
+                    UImages.filter3LineIcon,
                     height: 24,
                     width: 24,
                     colorFilter: ColorFilter.mode(
@@ -151,7 +152,7 @@ class TransactionsScreen extends GetView<TransactionsController> {
                   ),
                   itemBuilder: (context, index) {
                     final t = transactions[index];
-                    return _buildTransactionRow(context, t, dark);
+                    return _buildTransactionRow(context, t, dark, isMatched);
                   },
                 ),
               );
@@ -209,7 +210,7 @@ class TransactionsScreen extends GetView<TransactionsController> {
               title: 'Add Transaction',
               onTap: () {
                 Get.back();
-                // Add Transaction Logic
+                Get.to(() => const AddTransactionScreen());
               },
             ),
             const SizedBox(height: USizes.spaceBtwItems),
@@ -400,26 +401,22 @@ class TransactionsScreen extends GetView<TransactionsController> {
   }
 
   Widget _buildToggleTab(BuildContext context, String title, bool isSelected) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => controller.changeTab(title),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF1E2432) : UColors.white,
-            borderRadius: BorderRadius.circular(30),
-            border: isSelected
-                ? null
-                : Border.all(color: UColors.borderPrimary),
-          ),
-          child: Center(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                color: isSelected ? UColors.white : UColors.textSecondary,
-              ),
-            ),
+    return GestureDetector(
+      onTap: () => controller.changeTab(title),
+      child: Container(
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: USizes.md),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFF1E2432) : UColors.white,
+          borderRadius: BorderRadius.circular(30),
+          border: isSelected ? null : Border.all(color: UColors.borderPrimary),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            color: isSelected ? UColors.white : UColors.textSecondary,
           ),
         ),
       ),
@@ -430,8 +427,10 @@ class TransactionsScreen extends GetView<TransactionsController> {
     BuildContext context,
     Map<String, dynamic> t,
     bool dark,
+    bool isMatched,
   ) {
     final isCredit = t['type'] == 'Credit';
+    final color = isMatched ? UColors.success : UColors.blue373D;
     return InkWell(
       onTap: () {
         Get.to(
@@ -446,17 +445,15 @@ class TransactionsScreen extends GetView<TransactionsController> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: UColors.bg,
-              shape: BoxShape.circle,
+              color: color.withAlpha(20),
+
+              borderRadius: BorderRadius.circular(8),
             ),
             child: SvgPicture.asset(
               UImages.dollarIcon,
               height: 20,
               width: 20,
-              colorFilter: const ColorFilter.mode(
-                UColors.success,
-                BlendMode.srcIn,
-              ),
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
           ),
           const SizedBox(width: 12),
@@ -567,7 +564,7 @@ class TransactionsScreen extends GetView<TransactionsController> {
         SizedBox(
           width: 200,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => Get.to(() => const AddTransactionScreen()),
             style: ElevatedButton.styleFrom(
               backgroundColor: UColors.primary,
               foregroundColor: Colors.white,

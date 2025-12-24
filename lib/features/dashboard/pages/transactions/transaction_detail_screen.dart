@@ -55,13 +55,13 @@ class TransactionDetailScreen extends StatelessWidget {
               const SizedBox(height: USizes.spaceBtwItems),
               _buildMatchedTransactionsList(context, dark),
             ],
+            !isMatched
+                ? _buildUnmatchedActions(context, dark)
+                : const SizedBox.shrink(),
             const SizedBox(height: 100), // Bottom padding
           ],
         ),
       ),
-      bottomNavigationBar: !isMatched
-          ? _buildUnmatchedActions(context, dark)
-          : null,
     );
   }
 
@@ -240,7 +240,7 @@ class TransactionDetailScreen extends StatelessWidget {
 
   Widget _buildUnmatchedActions(BuildContext context, bool dark) {
     return Padding(
-      padding: const EdgeInsets.all(USizes.defaultSpace),
+      padding: const EdgeInsets.symmetric(vertical: USizes.md),
       child: Row(
         children: [
           _buildActionButton(context, 'Personal', () {}),
@@ -259,20 +259,23 @@ class TransactionDetailScreen extends StatelessWidget {
     VoidCallback onTap,
   ) {
     return Expanded(
-      child: OutlinedButton(
-        onPressed: onTap,
-        style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: UColors.primary),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: SizedBox(
+        height: 40,
+        child: OutlinedButton(
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            side: const BorderSide(color: UColors.primary),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 0),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: UColors.primary,
-            fontWeight: FontWeight.bold,
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: UColors.primary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

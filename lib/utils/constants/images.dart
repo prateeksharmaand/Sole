@@ -61,16 +61,18 @@ class UImages {
   static const String assetsListIcon = "assets/icons/assets_list.svg";
   static const String auditTrailIcon = "assets/icons/audit_trail.svg";
   static const String balanceSheetIcon = "assets/icons/balance_sheet.svg";
-  static const String consolidatedReportIcon = "assets/icons/consolidated_report.svg";
-  static const String customerSupplierIcon = "assets/icons/customer_supplier.svg";
+  static const String consolidatedReportIcon =
+      "assets/icons/consolidated_report.svg";
+  static const String customerSupplierIcon =
+      "assets/icons/customer_supplier.svg";
   static const String downloadIcon = "assets/icons/download.svg";
   static const String filterIcon = "assets/icons/filter.svg";
   static const String gSTExtractIcon = "assets/icons/GST_extract.svg";
   static const String profitLossIcon = "assets/icons/profit_loss.svg";
-  static const String transactionListingIcon = "assets/icons/transaction_listing.svg";
+  static const String transactionListingIcon =
+      "assets/icons/transaction_listing.svg";
   static const String calendarLineIcon = "assets/icons/calendar-line.svg";
   static const String rupeeIcon = "assets/icons/rupee.svg";
-
 
   // Expenses
   static const String uploadReceiptIcon = "assets/icons/upload_receipt.svg";
@@ -82,13 +84,15 @@ class UImages {
   static const String deleteIcon = "assets/icons/delete-bin-6-line.svg";
   static const String closeCircleRedIcon = "assets/icons/close-circle-fill.svg";
   static const String arrowLeftIconTable = "assets/icons/arrow_left_table.svg";
-  static const String arrowRightIconTable = "assets/icons/arrow_right_table.svg";
+  static const String arrowRightIconTable =
+      "assets/icons/arrow_right_table.svg";
   static const String Icon = "";
 
   // notification
-  static const String notificationListIcon = "assets/icons/notification_list_icon.svg";
-  static const String notificationCircleIcon = "assets/icons/notification_circle.svg";
-
+  static const String notificationListIcon =
+      "assets/icons/notification_list_icon.svg";
+  static const String notificationCircleIcon =
+      "assets/icons/notification_circle.svg";
 
   //icons
   static const String notificationIcon = "assets/icons/notification.svg";
@@ -109,4 +113,5 @@ class UImages {
   static const String listIcon = "assets/icons/list.svg";
   static const String clockIcon = "assets/icons/clock.svg";
   static const String bankIcon = "assets/icons/bank.svg";
+  static const String filter3LineIcon = "assets/icons/filter-3-line.svg";
 }

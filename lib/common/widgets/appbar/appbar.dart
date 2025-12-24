@@ -15,7 +15,8 @@ class UAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leadingOnPressed,
     this.showDivider = true,
-    this.centerTitle = false, this.backgroundColor,
+    this.centerTitle = false,
+    this.backgroundColor,
   });
 
   final Widget? title;
@@ -33,21 +34,22 @@ class UAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       elevation: 0,
       backgroundColor: backgroundColor ?? UColors.white,
-       centerTitle: centerTitle,
+      centerTitle: centerTitle,
+
       /// Leading
       leading: showBackArrow
           ? IconButton(
-        onPressed: Get.back,
-        icon: SvgPicture.asset(UImages.arrowLeft),
-      )
+              onPressed: Get.back,
+              icon: SvgPicture.asset(
+                UImages.arrowLeft,
+                color: UColors.textSecondary,
+              ),
+            )
           : leadingIcon != null
           ? IconButton(
-        onPressed: leadingOnPressed,
-        icon: Icon(
-          leadingIcon,
-          color: UColors.textSecondary,
-        ),
-      )
+              onPressed: leadingOnPressed,
+              icon: Icon(leadingIcon, color: UColors.textSecondary),
+            )
           : null,
 
       /// Title
@@ -59,13 +61,13 @@ class UAppBar extends StatelessWidget implements PreferredSizeWidget {
       /// 🔹 Bottom Divider
       bottom: showDivider
           ? PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Divider(
-          height: 1,
-          thickness: 1,
-          color: UColors.borderBtn.withOpacity(0.6),
-        ),
-      )
+              preferredSize: const Size.fromHeight(1),
+              child: Divider(
+                height: 1,
+                thickness: 1,
+                color: UColors.borderBtn.withOpacity(0.6),
+              ),
+            )
           : null,
     );
   }

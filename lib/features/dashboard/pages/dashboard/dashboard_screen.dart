@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:sole/features/dashboard/transactions/transactions_screen.dart';
+import 'package:sole/features/dashboard/pages/transactions/transactions_screen.dart';
+import 'package:sole/features/dashboard/pages/assets/assets_screen.dart';
+import 'package:sole/features/dashboard/pages/invoices/invoices_screen.dart';
+import 'package:sole/features/dashboard/pages/add_expenses/add_expenses_screen.dart';
+import 'package:sole/features/dashboard/pages/notification/notification_screen.dart';
+import 'package:sole/features/dashboard/pages/profile/profile_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
-import '../../../../utils/constants/sizes.dart';
+import '../../../../../utils/constants/sizes.dart';
 import 'dashboard_controller.dart';
 
 class DashboardScreen extends GetView<DashboardController> {
@@ -57,29 +62,36 @@ class DashboardScreen extends GetView<DashboardController> {
                         // Notification & Profile
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: UColors.white.withValues(alpha: 0.2),
-                                shape: BoxShape.circle,
-                              ),
-                              child: SvgPicture.asset(
-                                UImages.notificationIcon,
-                                height: 18,
-                                width: 18,
-                                colorFilter: ColorFilter.mode(
-                                  UColors.white,
-                                  BlendMode.srcIn,
+                            GestureDetector(
+                              onTap: () =>
+                                  Get.to(() => const NotificationScreen()),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  color: UColors.white.withValues(alpha: 0.2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: SvgPicture.asset(
+                                  UImages.notificationIcon,
+                                  height: 18,
+                                  width: 18,
+                                  colorFilter: ColorFilter.mode(
+                                    UColors.white,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
                             ),
                             const SizedBox(width: USizes.spaceBtwItems),
-                            const CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(
-                                "https://as2.ftcdn.net/v2/jpg/01/18/63/09/1000_F_118630957_MvuK2rw0Avyp3HwlARVQWx7M3edlC4oO.jpg",
+                            GestureDetector(
+                              onTap: () => Get.to(() => const ProfileScreen()),
+                              child: const CircleAvatar(
+                                radius: 20,
+                                backgroundImage: NetworkImage(
+                                  "https://as2.ftcdn.net/v2/jpg/01/18/63/09/1000_F_118630957_MvuK2rw0Avyp3HwlARVQWx7M3edlC4oO.jpg",
+                                ),
                               ),
                             ),
                           ],
@@ -218,11 +230,14 @@ class DashboardScreen extends GetView<DashboardController> {
                                 context,
                                 icon: UImages.folderOpenIcon,
                                 label: 'Assets',
+                                onTap: () => Get.to(() => const AssetsScreen()),
                               ),
                               _buildActionItem(
                                 context,
                                 icon: UImages.documentIcon2,
                                 label: 'Quotes',
+                                onTap: () =>
+                                    Get.to(() => const InvoicesScreen()),
                               ),
                               _buildActionItem(
                                 context,
@@ -383,7 +398,8 @@ class DashboardScreen extends GetView<DashboardController> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton(
-                              onPressed: () {},
+                              onPressed: () =>
+                                  Get.to(() => const TransactionsScreen()),
                               style: OutlinedButton.styleFrom(
                                 side: const BorderSide(
                                   color: UColors.borderPrimary,
@@ -707,24 +723,40 @@ class DashboardScreen extends GetView<DashboardController> {
                       UImages.documentIcon,
                       'Add Invoice',
                       const Color(0xFF5B7FFF),
+                      onTap: () {
+                        controller.toggleFab();
+                        Get.to(() => const InvoicesScreen());
+                      },
                     ),
                     _fabMini(
                       context,
                       UImages.documentIcon2,
                       'Add Quote',
                       const Color(0xFF9B7FFF),
+                      onTap: () {
+                        controller.toggleFab();
+                        Get.to(() => const InvoicesScreen());
+                      },
                     ),
                     _fabMini(
                       context,
                       UImages.dollarIcon,
                       'Add Expense',
                       const Color(0xFF4FC3F7),
+                      onTap: () {
+                        controller.toggleFab();
+                        Get.to(() => const AddExpensesScreen());
+                      },
                     ),
                     _fabMini(
                       context,
                       UImages.profileCircleIcon,
                       'Add Contact',
                       const Color(0xFFFF9F7F),
+                      onTap: () {
+                        controller.toggleFab();
+                        // TODO: navigation for Contact
+                      },
                     ),
                   ],
                 ),
@@ -750,13 +782,11 @@ class DashboardScreen extends GetView<DashboardController> {
     BuildContext context,
     String iconPath,
     String label,
-    Color iconBackgroundColor,
-  ) {
+    Color iconBackgroundColor, {
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
-      onTap: () {
-        controller.toggleFab();
-        // TODO: navigate to add screens
-      },
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(

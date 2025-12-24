@@ -61,4 +61,5 @@ class UColors {
   static const Color red3137 = Color(0xFFA73137);
   static const Color red4954 = Color(0xFFEE4954);
   static const Color bgContainerF8FA = Color(0xFFF6F8FA);
+  static const Color blue373D = Color(0xFF373DFF);
 }
