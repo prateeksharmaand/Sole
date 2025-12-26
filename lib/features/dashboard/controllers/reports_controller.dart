@@ -31,7 +31,7 @@ class ReportsController extends GetxController {
         break;
 
       case 3:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.assetsListingScreen);
         break;
 
       case 4:
@@ -43,11 +43,11 @@ class ReportsController extends GetxController {
         break;
 
       case 6:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.cashFlowScreen);
         break;
 
       case 7:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.auditTrailScreen);
         break;
 
       default:

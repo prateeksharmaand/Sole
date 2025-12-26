@@ -3,7 +3,10 @@ import 'package:sole/features/authentication/controller/auth_controller.dart';
 import 'package:sole/features/authentication/controller/onboarding_controller.dart';
 import 'package:sole/features/dashboard/controllers/assets_controller.dart';
 import '../features/dashboard/controllers/add_expenses_controller.dart';
+import '../features/dashboard/controllers/audit_trail_controller.dart';
 import '../features/dashboard/controllers/balance_sheet_controller.dart';
+import '../features/dashboard/controllers/cash_flow_controller.dart';
+import '../features/dashboard/controllers/chart_of_account_controller.dart';
 import '../features/dashboard/controllers/communication_preferences_controller.dart';
 import '../features/dashboard/controllers/expense_controller.dart';
 import '../features/dashboard/controllers/notification_controller.dart';
@@ -35,6 +38,12 @@ class UBindings extends Bindings {
       () => NotificationController(),
       fenix: true,
     );
+    Get.lazyPut<AuditTrailController>(
+      () => AuditTrailController(),
+      fenix: true,
+    );
+    Get.lazyPut<CashFlowController>(() => CashFlowController(), fenix: true);
+    Get.lazyPut<ChartOfAccountController>(() => ChartOfAccountController(), fenix: true);
 
     Get.put(AuthController());
     Get.put(OnboardingController());

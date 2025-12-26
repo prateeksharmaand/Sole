@@ -10,7 +10,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
@@ -18,10 +17,7 @@ class MyApp extends StatelessWidget {
       darkTheme: UAppTheme.darkTheme,
       getPages: UAppRoutes.screens,
       initialBinding: UBindings(),
-      home: SplashScreen()
+      home: SplashScreen(),
     );
   }
 }
-
-
-
