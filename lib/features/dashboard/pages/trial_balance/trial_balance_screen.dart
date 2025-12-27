@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../common/widgets/app_btn/app_btn.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helpers/device_helpers.dart';
-import '../../controllers/balance_sheet_controller.dart';
 import '../audit_trail/audit_trail_screen.dart';
 import '../cash_flow/cash_flow_screen.dart';
 
-class BalanceSheetScreen extends GetView<BalanceSheetController> {
-  const BalanceSheetScreen({super.key});
+class TrialBalanceScreen extends StatelessWidget {
+  const TrialBalanceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +19,7 @@ class BalanceSheetScreen extends GetView<BalanceSheetController> {
         showBackArrow: true,
         showDivider: false,
         title: Text(
-          "Cashflow",
+          "Trial balance",
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -36,7 +34,7 @@ class BalanceSheetScreen extends GetView<BalanceSheetController> {
             /// Info Box
             CommonInfoContainer(
               text:
-              "Snapshot of what your business owns or is due to receive from others (assets), what it owes to others (liabilities), and what you've invested or retained in your business (equity).",
+              'Tracks the movement of money in and out of your business, showing how cash is generated and spent during a specific period. It helps assess your company’s liquidity, operational efficiency, and overall financial health.',
             ),
 
             SizedBox(height: USizes.lg),
@@ -45,18 +43,12 @@ class BalanceSheetScreen extends GetView<BalanceSheetController> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: UColors.borderBtn),
               ),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CommonHeadingValue(heading: 'Total Income',value: "-\$327.00"),
-                  Divider(color: UColors.divider),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CommonHeadingValue(heading: 'Liabilities',value: "-\$65.30"),
-                      Container(height: 50, width: 2, color: UColors.divider),
-                      CommonHeadingValue(heading: 'Net Position',value: "-\$261.70"),
-                    ],
-                  ),
+                  CommonHeadingValue(heading: 'Total Debit'),
+                  Container(height: 50, width: 2, color: UColors.divider),
+                  CommonHeadingValue(heading: 'Total Credit'),
                 ],
               ),
             ),
@@ -68,7 +60,6 @@ class BalanceSheetScreen extends GetView<BalanceSheetController> {
             SizedBox(height: USizes.md),
 
             /// List Area
-
           ],
         ),
       ),

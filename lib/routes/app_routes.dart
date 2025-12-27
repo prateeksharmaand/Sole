@@ -10,27 +10,52 @@ import '../features/dashboard/pages/assets/new_assets_screen.dart';
 import '../features/dashboard/pages/assets_listing/assets_listing_screen.dart';
 import '../features/dashboard/pages/audit_trail/audit_trail_screen.dart';
 import '../features/dashboard/pages/balance_sheet/balance_sheet_screen.dart';
+import '../features/dashboard/pages/bas_reports/bas_reports_screen.dart';
 import '../features/dashboard/pages/cash_flow/cash_flow_screen.dart';
 import '../features/dashboard/pages/chart_of_accounts/chart_of_accounts_screen.dart';
+import '../features/dashboard/pages/customers_suppliers/customers_screen.dart';
 import '../features/dashboard/pages/invoice_quote_branding/invoice_quote_branding_screen.dart';
 import '../features/dashboard/pages/notification/notification_screen.dart';
+import '../features/dashboard/pages/transaction_listing/transaction_listing_screen.dart';
+import '../features/dashboard/pages/trial_balance/trial_balance_screen.dart';
 
 class UAppRoutes {
-
   static final screens = [
     GetPage(name: URoutes.home, page: () => const LoadingScreen()),
     GetPage(name: URoutes.onBoarding, page: () => OnboardingScreen()),
-    GetPage(name: URoutes.communicationScreen, page: () => CommunicationPreferencesScreen()),
+    GetPage(
+      name: URoutes.communicationScreen,
+      page: () => CommunicationPreferencesScreen(),
+    ),
     GetPage(name: URoutes.assetsScreen, page: () => AssetsScreen()),
     GetPage(name: URoutes.newAssetsScreen, page: () => NewAssetsScreen()),
     GetPage(name: URoutes.balanceSheetScreen, page: () => BalanceSheetScreen()),
     GetPage(name: URoutes.addExpensesScreen, page: () => AddExpensesScreen()),
-    GetPage(name: URoutes.detailsExpensesScreen, page: () => DetailsExpensesScreen()),
+    GetPage(
+      name: URoutes.detailsExpensesScreen,
+      page: () => DetailsExpensesScreen(),
+    ),
     GetPage(name: URoutes.notificationScreen, page: () => NotificationScreen()),
-    GetPage(name: URoutes.invoiceQuoteBrandingScreen, page: () => InvoiceQuoteBrandingScreen()),
+    GetPage(
+      name: URoutes.invoiceQuoteBrandingScreen,
+      page: () => InvoiceQuoteBrandingScreen(),
+    ),
     GetPage(name: URoutes.auditTrailScreen, page: () => AuditTrailScreen()),
     GetPage(name: URoutes.cashFlowScreen, page: () => CashFlowScreen()),
-    GetPage(name: URoutes.chartOfAccountsScreen, page: () => ChartOfAccountsScreen()),
-    GetPage(name: URoutes.assetsListingScreen, page: () => AssetsListingScreen()),
+    GetPage(
+      name: URoutes.chartOfAccountsScreen,
+      page: () => ChartOfAccountsScreen(),
+    ),
+    GetPage(
+      name: URoutes.assetsListingScreen,
+      page: () => AssetsListingScreen(),
+    ),
+    GetPage(
+      name: URoutes.customersSuppliersScreen,
+      page: () => CustomersSuppliersScreen(),
+    ),
+    GetPage(name: URoutes.basReportsScreen, page: () => BasReportsScreen()),
+    GetPage(name: URoutes.trialBalanceScreen, page: () => TrialBalanceScreen()),
+    GetPage(name: URoutes.transactionListingScreen, page: () => TransactionListingScreen()),
   ];
 }

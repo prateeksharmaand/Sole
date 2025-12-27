@@ -19,11 +19,11 @@ class ReportsController extends GetxController {
   void onReportTap(int index) {
     switch (index) {
       case 0:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.balanceSheetScreen);
         break;
 
       case 1:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.transactionListingScreen);
         break;
 
       case 2:
@@ -39,7 +39,7 @@ class ReportsController extends GetxController {
         break;
 
       case 5:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.customersSuppliersScreen);
         break;
 
       case 6:
