@@ -7,7 +7,11 @@ import '../features/dashboard/pages/add_expenses/add_expenses_screen.dart';
 import '../features/dashboard/pages/add_expenses/details_expenses_screen.dart';
 import '../features/dashboard/pages/assets/assets_screen.dart';
 import '../features/dashboard/pages/assets/new_assets_screen.dart';
+import '../features/dashboard/pages/assets_listing/assets_listing_screen.dart';
+import '../features/dashboard/pages/audit_trail/audit_trail_screen.dart';
 import '../features/dashboard/pages/balance_sheet/balance_sheet_screen.dart';
+import '../features/dashboard/pages/cash_flow/cash_flow_screen.dart';
+import '../features/dashboard/pages/chart_of_accounts/chart_of_accounts_screen.dart';
 import '../features/dashboard/pages/invoice_quote_branding/invoice_quote_branding_screen.dart';
 import '../features/dashboard/pages/notification/notification_screen.dart';
 import '../features/dashboard/pages/quotes/quotes_screen.dart';
@@ -32,6 +36,11 @@ class UAppRoutes {
       page: () => DetailsExpensesScreen(),
     ),
     GetPage(name: URoutes.notificationScreen, page: () => NotificationScreen()),
+    GetPage(name: URoutes.invoiceQuoteBrandingScreen, page: () => InvoiceQuoteBrandingScreen()),
+    GetPage(name: URoutes.auditTrailScreen, page: () => AuditTrailScreen()),
+    GetPage(name: URoutes.cashFlowScreen, page: () => CashFlowScreen()),
+    GetPage(name: URoutes.chartOfAccountsScreen, page: () => ChartOfAccountsScreen()),
+    GetPage(name: URoutes.assetsListingScreen, page: () => AssetsListingScreen()),
     GetPage(
       name: URoutes.invoiceQuoteBrandingScreen,
       page: () => InvoiceQuoteBrandingScreen(),

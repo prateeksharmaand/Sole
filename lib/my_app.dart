@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       darkTheme: UAppTheme.darkTheme,
       getPages: UAppRoutes.screens,
       initialBinding: UBindings(),
-      home: const SplashScreen(),
+      home: SplashScreen(),
     );
   }
 }

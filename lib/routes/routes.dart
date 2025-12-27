@@ -14,6 +14,12 @@ class URoutes {
   static const String addExpensesScreen = '/addExpensesScreen';
   static const String detailsExpensesScreen = '/detailsExpensesScreen';
   static const String notificationScreen = '/notificationScreen';
+  static const String invoiceQuoteBrandingScreen = '/invoiceQuoteBrandingScreen';
+  static const String auditTrailScreen = '/auditTrailScreen';
+  static const String cashFlowScreen = '/cashFlowScreen';
+  static const String chartOfAccountsScreen = '/chartOfAccountsScreen';
+  static const String assetsListingScreen = '/assetsListingScreen';
+
   static const String invoiceQuoteBrandingScreen =
       '/invoiceQuoteBrandingScreen';
   static const String quotes = '/quotes';

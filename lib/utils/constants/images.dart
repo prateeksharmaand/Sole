@@ -114,4 +114,7 @@ class UImages {
   static const String clockIcon = "assets/icons/clock.svg";
   static const String bankIcon = "assets/icons/bank.svg";
   static const String filter3LineIcon = "assets/icons/filter-3-line.svg";
+
+  // reporting
+  static const String emptyReportingIcon = "assets/icons/empty_reporting.svg";
 }
