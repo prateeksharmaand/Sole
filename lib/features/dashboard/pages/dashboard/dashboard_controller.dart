@@ -9,7 +9,7 @@ class DashboardController extends GetxController {
 
   // Observable variables for UI updates
   final RxString selectedTimeRange = 'MTD'.obs;
-  final RxDouble currentBalance = 10000.00.obs;
+  final RxDouble currentBalance = 100000.00.obs;
 
   // Stats Data
   final RxDouble totalRevenue = 10000.00.obs;

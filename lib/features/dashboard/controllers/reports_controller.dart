@@ -7,7 +7,7 @@ class ReportsController extends GetxController {
   List reportList = [
     {"icon": UImages.balanceSheetIcon, "text": "Balance Sheet"},
     {"icon": UImages.transactionListingIcon, "text": "Transaction Listing"},
-    {"icon": UImages.gSTExtractIcon, "text": "GST Extract"},
+    {"icon": UImages.gSTExtractIcon, "text": "VAT Listing"},
     {"icon": UImages.assetListingIcon, "text": "Asset Listing"},
     {"icon": UImages.profitLossIcon, "text": "Profit & Loss"},
     {"icon": UImages.customerSupplierIcon, "text": "Customer / Supplier"},
@@ -35,7 +35,7 @@ class ReportsController extends GetxController {
         break;
 
       case 4:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.toNamed(URoutes.profitLoss);
         break;
 
       case 5:

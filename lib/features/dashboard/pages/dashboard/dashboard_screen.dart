@@ -10,6 +10,7 @@ import 'package:sole/features/dashboard/pages/profile/profile_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
+import 'package:sole/routes/routes.dart';
 import '../../../../../utils/constants/sizes.dart';
 import 'dashboard_controller.dart';
 
@@ -236,8 +237,7 @@ class DashboardScreen extends GetView<DashboardController> {
                                 context,
                                 icon: UImages.documentIcon2,
                                 label: 'Quotes',
-                                onTap: () =>
-                                    Get.to(() => const InvoicesScreen()),
+                                onTap: () => Get.toNamed(URoutes.quotes),
                               ),
                               _buildActionItem(
                                 context,
@@ -735,7 +735,7 @@ class DashboardScreen extends GetView<DashboardController> {
                       const Color(0xFF9B7FFF),
                       onTap: () {
                         controller.toggleFab();
-                        Get.to(() => const InvoicesScreen());
+                        Get.toNamed(URoutes.createQuote);
                       },
                     ),
                     _fabMini(

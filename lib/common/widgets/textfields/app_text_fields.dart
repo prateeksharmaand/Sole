@@ -114,23 +114,25 @@ class _UTextFieldState extends State<UTextField> {
         SizedBox(
           width: widget.width,
           child: Container(
+            margin: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.borderRadius!),
               boxShadow: _focusNode.hasFocus
                   ? [
-                BoxShadow(
-                  color: UColors.primary.withOpacity(0.35),
-                  blurRadius: 12,
-                  spreadRadius: 1,
-                ),
-              ]
+                      BoxShadow(
+                        color: UColors.primary.withOpacity(0.35),
+                        blurRadius: 0,
+                        spreadRadius: 4,
+                      ),
+                    ]
                   : [],
             ),
             child: TextFormField(
               controller: widget.controller,
               focusNode: _focusNode,
               inputFormatters: widget.inputFormatters,
-              style: widget.textstyle ??
+              style:
+                  widget.textstyle ??
                   GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: UColors.textPrimary,
@@ -154,21 +156,21 @@ class _UTextFieldState extends State<UTextField> {
                 errorMaxLines: 5,
                 filled: widget.isFilled,
                 fillColor: widget.fillColor,
-                contentPadding: widget.contentPadding ??
+                contentPadding:
+                    widget.contentPadding ??
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 hintText: widget.hintText,
-                hintStyle: widget.hintTextStyle ??
+                hintStyle:
+                    widget.hintTextStyle ??
                     GoogleFonts.plusJakartaSans(
                       fontSize: 13,
                       color: UColors.textSecondary,
                     ),
                 labelText: widget.labelText,
-                labelStyle:
-                Theme.of(context).textTheme.headlineSmall!.copyWith(
+                labelStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   letterSpacing: -0.1,
                   fontSize: 14,
-                  color:
-                  UColors.textPrimary.withOpacity(0.24),
+                  color: UColors.textPrimary.withOpacity(0.24),
                 ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(
@@ -180,19 +182,13 @@ class _UTextFieldState extends State<UTextField> {
                   borderRadius: BorderRadius.circular(
                     widget.maxLines == null ? widget.borderRadius! : 8,
                   ),
-                  borderSide: BorderSide(
-                    color: widget.borderColor!,
-                    width: 1,
-                  ),
+                  borderSide: BorderSide(color: widget.borderColor!, width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(
                     widget.maxLines == null ? widget.borderRadius! : 8,
                   ),
-                  borderSide: BorderSide(
-                    color: UColors.primary,
-                    width: 2,
-                  ),
+                  borderSide: BorderSide(color: UColors.primary, width: 2),
                 ),
                 disabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(
@@ -200,34 +196,39 @@ class _UTextFieldState extends State<UTextField> {
                   ),
                   borderSide: const BorderSide(color: Colors.green),
                 ),
-                prefixIcon: widget.prefixWidget ??
+                prefixIcon:
+                    widget.prefixWidget ??
                     (widget.prefix == null
                         ? null
                         : Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                        top: 10,
-                        bottom: 10,
-                        right: 6,
-                      ),
-                      child: SvgPicture.asset(
-                        widget.prefix!,
-                        width: 30,
-                        height: 30,
-                        colorFilter: ColorFilter.mode(
-                          widget.prefixColor!,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    )),
-                prefixIconConstraints:
-                const BoxConstraints(minHeight: 15, minWidth: 15),
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              top: 10,
+                              bottom: 10,
+                              right: 6,
+                            ),
+                            child: SvgPicture.asset(
+                              widget.prefix!,
+                              width: 30,
+                              height: 30,
+                              colorFilter: ColorFilter.mode(
+                                widget.prefixColor!,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          )),
+                prefixIconConstraints: const BoxConstraints(
+                  minHeight: 15,
+                  minWidth: 15,
+                ),
                 suffixIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: widget.suffix,
                 ),
-                suffixIconConstraints:
-                const BoxConstraints(minHeight: 20, minWidth: 20),
+                suffixIconConstraints: const BoxConstraints(
+                  minHeight: 20,
+                  minWidth: 20,
+                ),
                 counterText: "",
               ),
             ),
@@ -352,7 +353,8 @@ class _UTextField2State extends State<UTextField2> {
             controller: widget.controller,
             focusNode: _focusNode,
             inputFormatters: widget.inputFormatters,
-            style: widget.textstyle ??
+            style:
+                widget.textstyle ??
                 GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   color: UColors.textPrimary,
@@ -398,63 +400,56 @@ class _UTextField2State extends State<UTextField2> {
               ),
 
               /// 🔹 PREFIX (same as UTextField)
-              prefixIcon: widget.prefixWidget ??
+              prefixIcon:
+                  widget.prefixWidget ??
                   (widget.prefix == null
                       ? null
                       : Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      top: 10,
-                      bottom: 10,
-                      right: 6,
-                    ),
-                    child: SvgPicture.asset(
-                      widget.prefix!,
-                      width: 22,
-                      height: 22,
-                      colorFilter: ColorFilter.mode(
-                        widget.prefixColor!,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  )),
-              prefixIconConstraints:
-              const BoxConstraints(minHeight: 15, minWidth: 15),
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            top: 10,
+                            bottom: 10,
+                            right: 6,
+                          ),
+                          child: SvgPicture.asset(
+                            widget.prefix!,
+                            width: 22,
+                            height: 22,
+                            colorFilter: ColorFilter.mode(
+                              widget.prefixColor!,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        )),
+              prefixIconConstraints: const BoxConstraints(
+                minHeight: 15,
+                minWidth: 15,
+              ),
 
               /// 🔹 SUFFIX (same as UTextField)
               suffixIcon: widget.suffix == null
                   ? null
                   : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: widget.suffix,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: widget.suffix,
+                    ),
+              suffixIconConstraints: const BoxConstraints(
+                minHeight: 20,
+                minWidth: 20,
               ),
-              suffixIconConstraints:
-              const BoxConstraints(minHeight: 20, minWidth: 20),
 
               /// Underline Borders
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: UColors.borderBtn,
-                  width: 1,
-                ),
+                borderSide: BorderSide(color: UColors.borderBtn, width: 1),
               ),
               focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: UColors.primary,
-                  width: 2,
-                ),
+                borderSide: BorderSide(color: UColors.primary, width: 2),
               ),
               errorBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.red,
-                  width: 1,
-                ),
+                borderSide: BorderSide(color: Colors.red, width: 1),
               ),
               focusedErrorBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.red,
-                  width: 2,
-                ),
+                borderSide: BorderSide(color: Colors.red, width: 2),
               ),
             ),
           ),

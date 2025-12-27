@@ -1,7 +1,4 @@
-
-
-class URoutes{
-
+class URoutes {
   static const String splash = '/';
   static const String home = '/home';
   static const String profile = '/profile';
@@ -17,6 +14,11 @@ class URoutes{
   static const String addExpensesScreen = '/addExpensesScreen';
   static const String detailsExpensesScreen = '/detailsExpensesScreen';
   static const String notificationScreen = '/notificationScreen';
-  static const String invoiceQuoteBrandingScreen = '/invoiceQuoteBrandingScreen';
-
+  static const String invoiceQuoteBrandingScreen =
+      '/invoiceQuoteBrandingScreen';
+  static const String quotes = '/quotes';
+  static const String createQuote = '/create-quote';
+  static const String reporting = '/reporting';
+  static const String profitLoss = '/profit-loss';
+  static const String webview = '/webview';
 }

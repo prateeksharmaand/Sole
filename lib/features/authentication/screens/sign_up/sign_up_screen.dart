@@ -13,11 +13,14 @@ import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
 
+import 'package:sole/features/authentication/screens/sign_up/sign_up_controller.dart';
+
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(SignUpController());
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(
@@ -69,6 +72,7 @@ class SignUpScreen extends StatelessWidget {
                   ),
                   SizedBox(height: USizes.sm * 1.5),
                   UTextField(
+                    controller: controller.emailController,
                     hintText: "Enter your email",
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
@@ -83,40 +87,151 @@ class SignUpScreen extends StatelessWidget {
                       color: UColors.text4054,
                       fontWeight: FontWeight.w500,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: USizes.sm * 1.5),
-                  UTextField(
-                    hintText: "Enter Password",
-                    prefixWidget: Padding(
-                      padding: EdgeInsets.only(left: USizes.sm * 1.5),
-                      child: SvgPicture.asset(UImages.passwordIcon),
+                  Obx(
+                    () => UTextField(
+                      controller: controller.passwordController,
+                      hintText: "Enter password",
+                      isFilled: true,
+                      fillColor: Colors.white,
+                      borderRadius: 10,
+                      prefixWidget: Padding(
+                        padding: EdgeInsets.only(left: USizes.sm * 1.5),
+                        child: SvgPicture.asset(UImages.passwordIcon),
+                      ),
+                      obscureText: !controller.isPasswordVisible.value,
+                      onchanged: controller.updatePassword,
+                      suffix: IconButton(
+                        icon: Icon(
+                          controller.isPasswordVisible.value
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: UColors.iconA2B3,
+                        ),
+                        onPressed: controller.togglePasswordVisibility,
+                      ),
                     ),
-                    suffix: Icon(
-                      Icons.visibility_off_outlined,
-                      color: UColors.iconA2B3,
+                  ),
+                  SizedBox(height: USizes.sm),
+                  // Password Strength Bars
+                  Obx(
+                    () => Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 4,
+                            margin: const EdgeInsets.only(right: 5),
+                            decoration: BoxDecoration(
+                              color: controller.passwordStrength.value > 0
+                                  ? const Color(0xFF10B981) // Green
+                                  : UColors.disableD0D5,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 4,
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: controller.passwordStrength.value > 0.33
+                                  ? const Color(0xFF10B981)
+                                  : UColors.disableD0D5,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 4,
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              color: controller.passwordStrength.value > 0.66
+                                  ? const Color(0xFF10B981)
+                                  : UColors.disableD0D5,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 4,
+                            margin: const EdgeInsets.only(left: 5),
+                            decoration: BoxDecoration(
+                              color: controller.passwordStrength.value == 1.0
+                                  ? const Color(0xFF10B981)
+                                  : UColors.disableD0D5,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: USizes.sm),
+                  // Strength Text
+                  Obx(
+                    () => Text(
+                      controller.passwordStrength.value == 1.0
+                          ? "Strong password. Your password is secure."
+                          : "Must contain at least:",
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        color: UColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: USizes.sm),
+                  // Checklist
+                  Obx(
+                    () => Column(
+                      children: [
+                        _buildCheckItem(
+                          "At least 1 uppercase",
+                          controller.hasUppercase.value,
+                        ),
+                        const SizedBox(height: 4),
+                        _buildCheckItem(
+                          "At least 1 number",
+                          controller.hasDigits.value,
+                        ),
+                        const SizedBox(height: 4),
+                        _buildCheckItem(
+                          "At least 8 characters",
+                          controller.hasMinLength.value,
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(height: USizes.md),
                   Text(
-                    "Confirmation Password",
+                    "Confirm Password",
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
                       color: UColors.text4054,
                       fontWeight: FontWeight.w500,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: USizes.sm * 1.5),
-                  UTextField(
-                    hintText: "Enter confirmation password",
-                    prefixWidget: Padding(
-                      padding: EdgeInsets.only(left: USizes.sm * 1.5),
-                      child: SvgPicture.asset(UImages.passwordIcon),
-                    ),
-                    suffix: Icon(
-                      Icons.visibility_off_outlined,
-                      color: UColors.iconA2B3,
+                  Obx(
+                    () => UTextField(
+                      controller: controller.confirmPasswordController,
+                      hintText: "Enter Confirm Password",
+                      prefixWidget: Padding(
+                        padding: EdgeInsets.only(left: USizes.sm * 1.5),
+                        child: SvgPicture.asset(UImages.passwordIcon),
+                      ),
+                      obscureText: !controller.isConfirmPasswordVisible.value,
+                      suffix: IconButton(
+                        icon: Icon(
+                          controller.isConfirmPasswordVisible.value
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: UColors.iconA2B3,
+                        ),
+                        onPressed: controller.toggleConfirmPasswordVisibility,
+                      ),
                     ),
                   ),
                   SizedBox(height: USizes.md),
@@ -210,9 +325,12 @@ class SignUpScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: USizes.lg),
-                  UButton(onPressed: () {
-                    Get.offAll(()=>LoginScreen());
-                  }, label: "Sign Up"),
+                  UButton(
+                    onPressed: () {
+                      Get.offAll(() => LoginScreen());
+                    },
+                    label: "Sign Up",
+                  ),
                   SizedBox(height: USizes.lg),
                   Row(
                     children: [
@@ -288,6 +406,26 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCheckItem(String text, bool isValid) {
+    return Row(
+      children: [
+        Icon(
+          Icons.check_circle,
+          size: 16,
+          color: isValid ? const Color(0xFF10B981) : UColors.disableD0D5,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 12,
+            color: isValid ? const Color(0xFF10B981) : UColors.textSecondary,
+          ),
+        ),
+      ],
     );
   }
 }
