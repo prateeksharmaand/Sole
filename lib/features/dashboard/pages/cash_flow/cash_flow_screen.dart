@@ -7,6 +7,7 @@ import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
 import '../../../../common/widgets/app_btn/app_btn.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
+import '../../../../common/widgets/drop_down/common_year_dropdown.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../assets/assets_screen.dart';
@@ -42,6 +43,24 @@ class CashFlowScreen extends GetView<CashFlowController> {
                   'Tracks the movement of money in and out of your business, showing how cash is generated and spent during a specific period. It helps assess your company’s liquidity, operational efficiency, and overall financial health.',
             ),
 
+            SizedBox(height: USizes.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedYear,
+                      years: controller.years,
+                      onChanged: (value){}),
+                ),
+                SizedBox(width: USizes.sm),
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedMonths,
+                      years: controller.months,
+                      onChanged: (value){}),
+                ),
+              ],
+            ),
             SizedBox(height: USizes.lg),
             Container(
               decoration: BoxDecoration(

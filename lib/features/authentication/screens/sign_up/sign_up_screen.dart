@@ -248,10 +248,10 @@ class SignUpScreen extends StatelessWidget {
                   UDropdownField(
                     hintText: "Select  join from",
                     items: const [
-                      'Spreadsheets',
-                      'Xero',
-                      'QuickBooks',
-                      'Zoho Books',
+                      'UK',
+                      'India',
+                      'China',
+                      'Nepal',
                     ],
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
@@ -278,10 +278,10 @@ class SignUpScreen extends StatelessWidget {
                   UDropdownField(
                     hintText: "Enter referral code",
                     items: const [
-                      'Spreadsheets',
-                      'Xero',
-                      'QuickBooks',
-                      'Zoho Books',
+                      'Referral Code 1',
+                      'Referral Code 2',
+                      'Referral Code 3',
+                      'Referral Code 4',
                     ],
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
@@ -308,10 +308,10 @@ class SignUpScreen extends StatelessWidget {
                   UDropdownField(
                     hintText: "Enter coupon code",
                     items: const [
-                      'Spreadsheets',
-                      'Xero',
-                      'QuickBooks',
-                      'Zoho Books',
+                      'Coupon Code A',
+                      'Coupon Code B',
+                      'Coupon Code C',
+                      'Coupon Code D',
                     ],
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),

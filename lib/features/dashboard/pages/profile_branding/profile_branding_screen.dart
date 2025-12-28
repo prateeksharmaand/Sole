@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotted_border/flutter_dotted_border.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sole/common/widgets/appbar/appbar.dart';
 import 'package:sole/common/widgets/textfields/app_text_fields.dart';
 import 'package:sole/utils/constants/colors.dart';
@@ -10,26 +13,48 @@ import 'package:sole/utils/helpers/device_helpers.dart';
 
 import '../taxes_bankings/taxes_banking_screen.dart';
 
+class ProfileAndBrandingController extends GetxController {
+  Rx<File?> selectedLogo = Rx<File?>(null);
+
+  Future<void> pickLogo() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file != null) {
+      selectedLogo.value = File(file.path);
+    }
+  }
+
+  void clearLogo() {
+    selectedLogo.value = null;
+  }
+}
+
+
 class ProfileBrandingScreen extends StatelessWidget {
   const ProfileBrandingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UAppBar(title: Text("Profile & Branding"), showBackArrow: true,
-      actions: [
-        TextButton(onPressed: (){
-          Get.back();
-        }, child:  Text(
-          "SAVE",
-          style: GoogleFonts.inter(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: UColors.primary,
+      appBar: UAppBar(
+        title: Text("Profile & Branding"),
+        showBackArrow: true,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: Text(
+              "SAVE",
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: UColors.primary,
+              ),
+            ),
           ),
-        ),)
-      ],
-      
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -42,44 +67,7 @@ class ProfileBrandingScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      // dotted Border Container
-                      DottedBorder(
-                        borderType: RoundedRectDottedBorder(
-                          color: UColors.borderB3FF,
-                          dashGap: 4,
-                          dashWidth: 4,
-                          strokeWidth: 2,
-                          radius: Radius.circular(4),
-                        ),
-                        child: Container(
-                          height: 104,
-                          width: 104,
-                          decoration: BoxDecoration(
-                            color: UColors.bg,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Center(
-                            child: Text("Upload your\nlogo",
-                                textAlign: TextAlign.center
-                                ,style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w400,fontSize: 12,color: UColors.textA4A6)),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: USizes.lg),
-            Expanded(
-              child: Text(
-                "Best size: 500 x 500 pixels Used on all invoices",
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: UColors.textSecondary,
-                )),
-            )
-                    ],
-                  ),
+                  LogoUploadRow(),
                   SizedBox(height: USizes.xl),
                   Row(
                     children: [
@@ -115,9 +103,7 @@ class ProfileBrandingScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: USizes.md),
-                  UTextField2(
-                    hintText: "Enter Your Email Address",
-                  ),
+                  UTextField2(hintText: "Enter Your Email Address"),
                   SizedBox(height: USizes.xl),
                   Text(
                     "Mobile Number",
@@ -139,9 +125,7 @@ class ProfileBrandingScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: USizes.md),
-                  UTextField2(
-                    hintText: "Enter Your Full Address",
-                  ),
+                  UTextField2(hintText: "Enter Your Full Address"),
                 ],
               ),
             ),
@@ -190,9 +174,7 @@ class ProfileBrandingScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: USizes.md),
-                  UTextField2(
-                    hintText: "Enter Business Name",
-                  ),
+                  UTextField2(hintText: "Enter Business Name"),
                   SizedBox(height: USizes.xl),
                   Text(
                     "Mobile Number",
@@ -225,3 +207,107 @@ class ProfileBrandingScreen extends StatelessWidget {
     );
   }
 }
+
+class LogoUploadRow extends GetView<ProfileAndBrandingController> {
+  const LogoUploadRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+          () => Row(
+        children: [
+          /// ===== LEFT SIDE (Dotted / Image) =====
+          GestureDetector(
+            onTap: () {
+              if (controller.selectedLogo.value == null) {
+                controller.pickLogo();
+              }
+            },
+            child: controller.selectedLogo.value == null
+                ? DottedBorder(
+              borderType: RoundedRectDottedBorder(
+                color: UColors.borderB3FF,
+                dashGap: 4,
+                dashWidth: 4,
+                strokeWidth: 2,
+                radius: Radius.circular(4),
+              ),
+              child: Container(
+                height: 104,
+                width: 104,
+                decoration: BoxDecoration(
+                  color: UColors.bg,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Center(
+                  child: Text(
+                    "Upload your\nlogo",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: UColors.textA4A6,
+                    ),
+                  ),
+                ),
+              ),
+            )
+
+            /// ===== IMAGE VIEW WITH CLEAR BUTTON =====
+                : Stack(
+              children: [
+                Container(
+                  height: 104,
+                  width: 104,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    image: DecorationImage(
+                      image: FileImage(controller.selectedLogo.value!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                /// CLEAR BUTTON
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: GestureDetector(
+                    onTap: controller.clearLogo,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        size: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          /// ===== RIGHT SIDE TEXT =====
+          Expanded(
+            child: Text(
+              "Best size: 500 x 500 pixels\nUsed on all invoices",
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: UColors.textSecondary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

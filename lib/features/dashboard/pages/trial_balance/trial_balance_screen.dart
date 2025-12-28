@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../common/widgets/app_btn/app_btn.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
+import '../../../../common/widgets/drop_down/common_year_dropdown.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../../utils/helpers/device_helpers.dart';
 import '../audit_trail/audit_trail_screen.dart';
 import '../cash_flow/cash_flow_screen.dart';
 
-class TrialBalanceScreen extends StatelessWidget {
+class TrialBalanceController  extends GetxController{
+final selectedYear = "2025-2026".obs;
+final selectedMonths = "March 2025".obs;
+final years = ["2023-2024", "2024-2025", "2025-2026", "2026-2027"];
+final months = ["March 2025", "April 2025", "May 2025", "June 2025"];
+}
+
+class TrialBalanceScreen extends GetView<TrialBalanceController> {
   const TrialBalanceScreen({super.key});
 
   @override
@@ -37,6 +46,24 @@ class TrialBalanceScreen extends StatelessWidget {
               'Tracks the movement of money in and out of your business, showing how cash is generated and spent during a specific period. It helps assess your company’s liquidity, operational efficiency, and overall financial health.',
             ),
 
+            SizedBox(height: USizes.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedYear,
+                      years: controller.years,
+                      onChanged: (value){}),
+                ),
+                SizedBox(width: USizes.sm),
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedMonths,
+                      years: controller.months,
+                      onChanged: (value){}),
+                ),
+              ],
+            ),
             SizedBox(height: USizes.lg),
             Container(
               decoration: BoxDecoration(

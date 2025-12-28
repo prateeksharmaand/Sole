@@ -23,9 +23,7 @@ class URoutes {
   static const String basReportsScreen = '/basReportsScreen';
   static const String transactionListingScreen = '/transactionListingScreen';
   static const String trialBalanceScreen = '/trialBalanceScreen';
-
-  static const String invoiceQuoteBrandingScreen =
-      '/invoiceQuoteBrandingScreen';
+ // static const String invoiceQuoteBrandingScreen = '/invoiceQuoteBrandingScreen';
   static const String quotes = '/quotes';
   static const String createQuote = '/create-quote';
   static const String reporting = '/reporting';

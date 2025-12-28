@@ -32,56 +32,7 @@ class NewAssetsScreen extends GetView<AssetsController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // dotted Border Container
-              DottedBorder(
-                borderType: RoundedRectDottedBorder(
-                  color: UColors.borderB3FF,
-                  dashGap: 4,
-                  dashWidth: 4,
-                  strokeWidth: 2,
-                  radius: Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 185,
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add),
-                      SizedBox(height: USizes.lg),
-                      Text(
-                        "Add a Photo or Receipt",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: UColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: USizes.xs),
-                      Text(
-                        "JPEG, PNG, or JPG formats, up to 5 MB.",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          color: UColors.text8C98,
-                        ),
-                      ),
-                      SizedBox(height: USizes.md),
-                      SizedBox(
-                        height: 38,
-                        width: 130,
-                        child: UButton(
-                          onPressed: () {},
-                          label: "Browse File",
-                          textColor: UColors.primary,
-                          borderColor: UColors.primary,
-                          bgColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              ReceiptUploadBox(),
               SizedBox(height: USizes.lg),
               UTextField2(hintText: "Enter asset name", titleText: "New Asset"),
               SizedBox(height: USizes.xl),
@@ -119,15 +70,15 @@ class NewAssetsScreen extends GetView<AssetsController> {
                 () => UDropDown<String>(
                   label: "Category",
                   hint: "Select category",
-                  value: controller.selectedReport.value,
-                  items: controller.reports
+                  value: controller.selectedCategory.value,
+                  items: controller.categoryList
                       .map(
                         (e) =>
                             DropdownMenuItem<String>(value: e, child: Text(e)),
                       )
                       .toList(),
                   onChanged: (value) {
-                    controller.selectedReport.value = value;
+                    controller.selectedCategory.value = value;
                   },
                 ),
               ),
@@ -196,3 +147,112 @@ class NewAssetsScreen extends GetView<AssetsController> {
     );
   }
 }
+
+class ReceiptUploadBox extends GetView<AssetsController> {
+  const ReceiptUploadBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+          () => controller.receiptImage.value == null
+          ? GestureDetector(
+        onTap: controller.pickFromGallery,
+        child: DottedBorder(
+          borderType: RoundedRectDottedBorder(
+            color: UColors.borderB3FF,
+            dashGap: 4,
+            dashWidth: 4,
+            strokeWidth: 2,
+            radius: const Radius.circular(12),
+          ),
+          child: SizedBox(
+            height: 185,
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Icon(Icons.add),
+                SizedBox(height: USizes.lg),
+                Text(
+                  "Add a Photo or Receipt",
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    color: UColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: USizes.xs),
+                Text(
+                  "JPEG, PNG, or JPG formats, up to 5 MB.",
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: UColors.text8C98,
+                  ),
+                ),
+                SizedBox(height: USizes.md),
+
+                /// Browse Button
+                SizedBox(
+                  height: 38,
+                  width: 130,
+                  child: UButton(
+                    onPressed: controller.pickFromGallery,
+                    label: "Browse File",
+                    textColor: UColors.primary,
+                    borderColor: UColors.primary,
+                    bgColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )
+
+      /// ===== IMAGE VIEW =====
+          : Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 185,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Image.file(
+                controller.receiptImage.value!,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
+          /// CLEAR ICON
+          Positioned(
+            right: 6,
+            top: 6,
+            child: GestureDetector(
+              onTap: controller.clearImage,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

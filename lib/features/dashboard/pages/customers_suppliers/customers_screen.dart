@@ -7,6 +7,7 @@ import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import '../../../../common/widgets/app_btn/app_btn.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
+import '../../../../common/widgets/drop_down/common_year_dropdown.dart';
 import '../../../../utils/constants/images.dart';
 import '../../../../utils/helpers/device_helpers.dart';
 import '../assets/assets_screen.dart';
@@ -28,6 +29,12 @@ class CustomersSuppliersController extends GetxController {
   void changeTab1(int index) {
     selectedTab1.value = index;
   }
+
+  final selectedYear = "2025-2026".obs;
+  final selectedMonths = "March 2025".obs;
+  final years = ["2023-2024", "2024-2025", "2025-2026", "2026-2027"];
+  final months = ["March 2025", "April 2025", "May 2025", "June 2025"];
+
 }
 
 /// ================= MAIN SCREEN =================
@@ -84,6 +91,24 @@ class CustomersSuppliersScreen extends GetView<CustomersSuppliersController> {
             /// INFO BOX
             CommonInfoContainer(text: 'Enter Your Own code to allow you to'),
 
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedYear,
+                      years: controller.years,
+                      onChanged: (value){}),
+                ),
+                SizedBox(width: USizes.sm),
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedMonths,
+                      years: controller.months,
+                      onChanged: (value){}),
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
 
             /// 🔥 MAIN CUSTOM TABS

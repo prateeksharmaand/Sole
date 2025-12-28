@@ -8,6 +8,7 @@ import 'package:sole/features/dashboard/pages/assets/assets_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
+import '../../../../common/widgets/drop_down/common_year_dropdown.dart';
 
 class AuditTrailScreen extends GetView<AuditTrailController> {
   const AuditTrailScreen({super.key});
@@ -38,6 +39,24 @@ class AuditTrailScreen extends GetView<AuditTrailController> {
               text: 'View all user activities and changes in the system.',
             ),
 
+            SizedBox(height: USizes.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedYear,
+                      years: controller.years,
+                      onChanged: (value){}),
+                ),
+                SizedBox(width: USizes.sm),
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedMonths,
+                      years: controller.months,
+                      onChanged: (value){}),
+                ),
+              ],
+            ),
             SizedBox(height: USizes.lg),
 
             /// Search

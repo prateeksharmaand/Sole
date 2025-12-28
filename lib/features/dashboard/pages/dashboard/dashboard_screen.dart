@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:sole/features/dashboard/pages/client_refunds/client_refunds_screen.dart';
+import 'package:sole/features/dashboard/pages/contact/contact_screen.dart';
+import 'package:sole/features/dashboard/pages/tracker/tracker_screen.dart';
 import 'package:sole/features/dashboard/pages/transactions/transactions_screen.dart';
 import 'package:sole/features/dashboard/pages/assets/assets_screen.dart';
 import 'package:sole/features/dashboard/pages/invoices/invoices_screen.dart';
@@ -219,6 +222,8 @@ class DashboardScreen extends GetView<DashboardController> {
                                 context,
                                 icon: UImages.clockIcon,
                                 label: 'Tracker',
+                                onTap: () =>
+                                    Get.to(() => const TrackerScreen()),
                               ),
                               _buildActionItem(
                                 context,
@@ -243,11 +248,15 @@ class DashboardScreen extends GetView<DashboardController> {
                                 context,
                                 icon: UImages.dollarIcon,
                                 label: 'Client Refunds',
+                                onTap: () =>
+                                    Get.to(() => const ClientRefundsScreen()),
                               ),
                               _buildActionItem(
                                 context,
                                 icon: UImages.profileCircleIcon,
                                 label: 'Contact',
+                                onTap: () =>
+                                    Get.to(() => const ContactScreen()),
                               ),
                             ],
                           ),

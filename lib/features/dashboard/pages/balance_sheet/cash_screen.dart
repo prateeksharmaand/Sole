@@ -10,12 +10,10 @@ class CashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UColors.bg,
       appBar: UAppBar(
         centerTitle: true,
         showBackArrow: true,
         showDivider: false,
-        backgroundColor: UColors.bg,
         title: Text(
           "Cash",
           style: GoogleFonts.plusJakartaSans(
@@ -27,41 +25,57 @@ class CashScreen extends StatelessWidget {
       ),
       body: Container(
         margin: EdgeInsets.all(USizes.defaultSpace20),
-        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: UColors.white,
+          border: Border.all(
+            color: UColors.borderBtn,width: 1
+          )
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            /// Email
-            Row(
-              children: [
-                Text(
-                  "21/09/2025",
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: UColors.black,
-                  ),
-                ),
-                SizedBox(width: USizes.sm * 1.5),
-                Text(
-                  "21/09/2025",
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: UColors.black,
-                  ),
-                ),
-              ],
-            ),
-            Divider(height: 20, color: UColors.borderBtn),
+            _yearAmountRow("2022", "\$200.00"),
+            Divider(color: UColors.borderBtn),
+
+            _yearAmountRow("2023", "\$200.00"),
+            Divider(color: UColors.borderBtn),
+
+            _yearAmountRow("2024", "\$250.00"),
+            Divider(color: UColors.borderBtn),
+
+            _yearAmountRow("2025", "\$300.00"),
           ],
         ),
       ),
+
     );
   }
+  Widget _yearAmountRow(String year, String amount) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 14,horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            year,
+            style: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: UColors.textPrimary,
+            ),
+          ),
+          Text(
+            amount,
+            style: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: UColors.textPrimary
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

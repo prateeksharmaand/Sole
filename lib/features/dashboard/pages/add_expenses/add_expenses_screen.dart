@@ -41,78 +41,7 @@ class AddExpensesScreen extends GetView<AddExpensesController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // dotted Border Container
-              DottedBorder(
-                borderType: RoundedRectDottedBorder(
-                  color: UColors.borderB3FF,
-                  dashGap: 4,
-                  dashWidth: 4,
-                  strokeWidth: 2,
-                  radius: Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 185,
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add),
-                      SizedBox(height: USizes.defaultSpace20),
-                      Text(
-                        "Add a Photo or Receipt",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: UColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: USizes.defaultSpace20),
-                      SizedBox(
-                        height: 38,
-                        width: 130,
-                        child: UButton(
-                          onPressed: () {},
-                          label: "Browse File",
-                          textColor: UColors.primary,
-                          borderColor: UColors.primary,
-                          bgColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: USizes.lg),
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: USizes.md,
-                    vertical: USizes.md,
-                  ),
-                  decoration: BoxDecoration(
-                    color: UColors.primaryLightE0FF,
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.camera_alt, color: UColors.primary),
-                      SizedBox(width: USizes.md),
-                      Text(
-                        "Open Camera & Take photos",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: UColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              ReceiptUploadBox(),
               SizedBox(height: USizes.lg),
               UTextField2(
                 hintText: "Write descriptions...",
@@ -171,15 +100,15 @@ class AddExpensesScreen extends GetView<AddExpensesController> {
                 () => UDropDown<String>(
                   label: "Category",
                   hint: "Select category",
-                  value: controller.selectedReport.value,
-                  items: controller.reports
+                  value: controller.selectedCategory.value,
+                  items: controller.categoryList
                       .map(
                         (e) =>
                             DropdownMenuItem<String>(value: e, child: Text(e)),
                       )
                       .toList(),
                   onChanged: (value) {
-                    controller.selectedReport.value = value;
+                    controller.selectedCategory.value = value;
                   },
                 ),
               ),
@@ -380,3 +309,134 @@ class DatePickerSheet extends StatelessWidget {
     );
   }
 }
+
+class ReceiptUploadBox extends GetView<AddExpensesController> {
+  const ReceiptUploadBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(
+          () => Column(
+        children: [
+
+          /// IF IMAGE SELECTED
+          if (controller.selectedImage.value != null)
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    controller.selectedImage.value!,
+                    height: 185,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                /// CLEAR BUTTON (TOP RIGHT)
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: GestureDetector(
+                    onTap: controller.clearImage,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.black54,
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(6),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+
+          /// ELSE SHOW DOTTED BOX
+          else
+            GestureDetector(
+              onTap: controller.pickFromGallery,
+              child: DottedBorder(
+                borderType: RoundedRectDottedBorder(
+                  color: UColors.borderB3FF,
+                  dashGap: 4,
+                  dashWidth: 4,
+                  strokeWidth: 2,
+                  radius: const Radius.circular(12),
+                ),
+                child: SizedBox(
+                  height: 185,
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add),
+                      SizedBox(height: USizes.defaultSpace20),
+                      Text(
+                        "Add a Photo or Receipt",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: UColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: USizes.defaultSpace20),
+                      SizedBox(
+                        height: 38,
+                        width: 130,
+                        child: UButton(
+                          onPressed: controller.pickFromGallery,
+                          label: "Browse File",
+                          textColor: UColors.primary,
+                          borderColor: UColors.primary,
+                          bgColor: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+          SizedBox(height: USizes.lg),
+
+          /// CAMERA BUTTON
+          GestureDetector(
+            onTap: controller.pickFromCamera,
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: USizes.md,
+                vertical: USizes.md,
+              ),
+              decoration: BoxDecoration(
+                color: UColors.primaryLightE0FF,
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.camera_alt, color: UColors.primary),
+                  SizedBox(width: USizes.md),
+                  Text(
+                    "Open Camera & Take photos",
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: UColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+

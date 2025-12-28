@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sole/common/widgets/drop_down/common_year_dropdown.dart';
 import '../../../../common/widgets/app_btn/app_btn.dart';
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../utils/constants/colors.dart';
@@ -21,6 +22,11 @@ class TransactionListingController extends GetxController {
   void changeTab(int index) {
     selectedTab.value = index;
   }
+
+  final selectedYear = "2025-2026".obs;
+  final selectedMonths = "March 2025".obs;
+  final years = ["2023-2024", "2024-2025", "2025-2026", "2026-2027"];
+  final months = ["March 2025", "April 2025", "May 2025", "June 2025"];
 }
 
 class TransactionListingScreen extends GetView<TransactionListingController> {
@@ -74,6 +80,24 @@ class TransactionListingScreen extends GetView<TransactionListingController> {
             /// INFO BOX
             CommonInfoContainer(text: 'Shows details about your business and personal transactions, including description, amount, date, category, and more.'),
 
+            SizedBox(height: USizes.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedYear,
+                      years: controller.years,
+                      onChanged: (value){}),
+                ),
+                SizedBox(width: USizes.sm),
+                Expanded(
+                  child: CommonYearDropdown(
+                      selectedYear: controller.selectedMonths,
+                      years: controller.months,
+                      onChanged: (value){}),
+                ),
+              ],
+            ),
             SizedBox(height: USizes.lg),
           Row(
             children: [

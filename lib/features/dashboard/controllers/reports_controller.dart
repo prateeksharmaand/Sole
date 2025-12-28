@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:sole/features/dashboard/pages/consolidated_report/consolidated_report_screen.dart';
+import 'package:sole/features/dashboard/pages/vat_listing/vat_listing_screen.dart';
 import 'package:sole/routes/routes.dart';
 
 import '../../../utils/constants/images.dart';
@@ -27,7 +29,7 @@ class ReportsController extends GetxController {
         break;
 
       case 2:
-        Get.toNamed(URoutes.assetsScreen);
+        Get.to(()=>VatListingScreen());
         break;
 
       case 3:
@@ -43,7 +45,7 @@ class ReportsController extends GetxController {
         break;
 
       case 6:
-        Get.toNamed(URoutes.cashFlowScreen);
+        Get.to(()=>ConsolidatedReportScreen());
         break;
 
       case 7:

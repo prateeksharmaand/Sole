@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/features/authentication/screens/login/login_screen.dart';
 import 'package:sole/features/dashboard/pages/profile/widgets/bussiness_information_card.dart';
+import 'package:sole/features/dashboard/pages/support/support_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
@@ -171,6 +172,9 @@ class ProfileScreen extends StatelessWidget {
                           IconText(
                             icon: UImages.headphoneIcon,
                             text: "Support",
+                            onTap: (){
+                              Get.to(()=>SupportScreen());
+                            },
                           ),
                           IconText(
                             icon: UImages.logoutIcon,
@@ -253,7 +257,7 @@ class IconText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: Column(
         children: [
