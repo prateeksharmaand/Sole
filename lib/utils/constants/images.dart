@@ -117,4 +117,5 @@ class UImages {
 
   // reporting
   static const String emptyReportingIcon = "assets/icons/empty_reporting.svg";
+  static const String basIcon = "assets/icons/bas.svg";
 }

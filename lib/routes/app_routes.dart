@@ -10,14 +10,18 @@ import '../features/dashboard/pages/assets/new_assets_screen.dart';
 import '../features/dashboard/pages/assets_listing/assets_listing_screen.dart';
 import '../features/dashboard/pages/audit_trail/audit_trail_screen.dart';
 import '../features/dashboard/pages/balance_sheet/balance_sheet_screen.dart';
+import '../features/dashboard/pages/bas_reports/bas_reports_screen.dart';
 import '../features/dashboard/pages/cash_flow/cash_flow_screen.dart';
 import '../features/dashboard/pages/chart_of_accounts/chart_of_accounts_screen.dart';
+import '../features/dashboard/pages/customers_suppliers/customers_screen.dart';
 import '../features/dashboard/pages/invoice_quote_branding/invoice_quote_branding_screen.dart';
 import '../features/dashboard/pages/notification/notification_screen.dart';
 import '../features/dashboard/pages/quotes/quotes_screen.dart';
 import '../features/dashboard/pages/quotes/create_quotes_screen.dart';
 import '../features/dashboard/pages/reports/profit_loss/profit_loss_screen.dart';
 import '../features/dashboard/pages/webview/webview_screen.dart';
+import '../features/dashboard/pages/transaction_listing/transaction_listing_screen.dart';
+import '../features/dashboard/pages/trial_balance/trial_balance_screen.dart';
 
 class UAppRoutes {
   static final screens = [
@@ -36,7 +40,10 @@ class UAppRoutes {
       page: () => DetailsExpensesScreen(),
     ),
     GetPage(name: URoutes.notificationScreen, page: () => NotificationScreen()),
-    GetPage(name: URoutes.invoiceQuoteBrandingScreen, page: () => InvoiceQuoteBrandingScreen()),
+    GetPage(
+      name: URoutes.invoiceQuoteBrandingScreen,
+      page: () => InvoiceQuoteBrandingScreen(),
+    ),
     GetPage(name: URoutes.auditTrailScreen, page: () => AuditTrailScreen()),
     GetPage(name: URoutes.cashFlowScreen, page: () => CashFlowScreen()),
     GetPage(name: URoutes.chartOfAccountsScreen, page: () => ChartOfAccountsScreen()),
@@ -49,5 +56,20 @@ class UAppRoutes {
     GetPage(name: URoutes.createQuote, page: () => const CreateQuotesScreen()),
     GetPage(name: URoutes.profitLoss, page: () => const ProfitLossScreen()),
     GetPage(name: URoutes.webview, page: () => const WebViewScreen()),
+    GetPage(
+      name: URoutes.chartOfAccountsScreen,
+      page: () => ChartOfAccountsScreen(),
+    ),
+    GetPage(
+      name: URoutes.assetsListingScreen,
+      page: () => AssetsListingScreen(),
+    ),
+    GetPage(
+      name: URoutes.customersSuppliersScreen,
+      page: () => CustomersSuppliersScreen(),
+    ),
+    GetPage(name: URoutes.basReportsScreen, page: () => BasReportsScreen()),
+    GetPage(name: URoutes.trialBalanceScreen, page: () => TrialBalanceScreen()),
+    GetPage(name: URoutes.transactionListingScreen, page: () => TransactionListingScreen()),
   ];
 }

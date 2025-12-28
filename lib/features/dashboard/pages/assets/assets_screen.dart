@@ -46,12 +46,12 @@ class AssetsScreen extends GetView<AssetsController> {
                 SizedBox(width: USizes.sm),
                 GestureDetector(
                   onTap: () {},
-                  child: SvgPicture.asset(UImages.filterIcon),
+                  child: SvgPicture.asset(UImages.filterIcon,height: 46),
                 ),
                 SizedBox(width: USizes.sm),
                 GestureDetector(
                   onTap: () {},
-                  child: SvgPicture.asset(UImages.downloadIcon),
+                  child: SvgPicture.asset(UImages.downloadIcon,height: 46 ),
                 ),
               ],
             ),

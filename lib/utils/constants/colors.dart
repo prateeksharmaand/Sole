@@ -5,6 +5,7 @@ class UColors {
 
   // Primary Color
   static const Color primary = Color(0xFF4646E6);
+  static const Color secondary = Color(0xFF191944);
   static const Color primaryLightE0FF = Color(0xFFE0E0FF);
   static const Color textPrimary4DFF = Color(0xFF4D4DFF);
 

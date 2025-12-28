@@ -14,8 +14,8 @@ class InvoicesScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextButton(onPressed: (){
-              Get.toNamed(URoutes.notificationScreen);
-            }, child: Text("Notification")),
+              Get.toNamed(URoutes.basReportsScreen);
+            }, child: Text("BasReportsScreen")),
             TextButton(onPressed: (){
               Get.toNamed(URoutes.invoiceQuoteBrandingScreen);
             }, child: Text("InvoiceQuoteBrandingScreen")),

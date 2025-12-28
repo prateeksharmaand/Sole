@@ -13,6 +13,9 @@ import '../features/dashboard/controllers/notification_controller.dart';
 import '../features/dashboard/controllers/reports_controller.dart';
 import 'package:sole/features/dashboard/pages/dashboard/dashboard_controller.dart';
 import 'package:sole/features/dashboard/pages/transactions/transactions_controller.dart';
+import '../features/dashboard/pages/bas_reports/bas_reports_screen.dart';
+import '../features/dashboard/pages/customers_suppliers/customers_screen.dart';
+import '../features/dashboard/pages/transaction_listing/transaction_listing_screen.dart';
 
 class UBindings extends Bindings {
   @override
@@ -43,7 +46,16 @@ class UBindings extends Bindings {
       fenix: true,
     );
     Get.lazyPut<CashFlowController>(() => CashFlowController(), fenix: true);
-    Get.lazyPut<ChartOfAccountController>(() => ChartOfAccountController(), fenix: true);
+    Get.lazyPut<ChartOfAccountController>(
+      () => ChartOfAccountController(),
+      fenix: true,
+    );
+    Get.lazyPut<CustomersSuppliersController>(
+      () => CustomersSuppliersController(),
+      fenix: true,
+    );
+    Get.lazyPut<BasReportsController>(() => BasReportsController(), fenix: true);
+    Get.lazyPut<TransactionListingController>(() => TransactionListingController(), fenix: true);
 
     Get.put(AuthController());
     Get.put(OnboardingController());
