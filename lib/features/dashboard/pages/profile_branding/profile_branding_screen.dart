@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotted_border/flutter_dotted_border.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,6 @@ import 'package:sole/common/widgets/textfields/app_text_fields.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
-
 import '../taxes_bankings/taxes_banking_screen.dart';
 
 class ProfileAndBrandingController extends GetxController {

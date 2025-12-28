@@ -172,8 +172,8 @@ class ProfileScreen extends StatelessWidget {
                           IconText(
                             icon: UImages.headphoneIcon,
                             text: "Support",
-                            onTap: (){
-                              Get.to(()=>SupportScreen());
+                            onTap: () {
+                              Get.to(() => SupportScreen());
                             },
                           ),
                           IconText(
@@ -183,7 +183,93 @@ class ProfileScreen extends StatelessWidget {
                             isArrow: false,
                             textColor: UColors.textRed414B,
                             onTap: () {
-                              Get.offAll(() => LoginScreen());
+                              Get.dialog(
+                                Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+
+                                        /// Icon
+                                        Container(
+                                          padding: EdgeInsets.all(14),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red.withOpacity(0.1),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.logout,
+                                            color: Colors.red,
+                                            size: 28,
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 16),
+
+                                        /// Title
+                                        Text(
+                                          "Logout",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 10),
+
+                                        /// Message
+                                        Text(
+                                          "Do you really want to log out?",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+
+                                        SizedBox(height: 20),
+
+                                        /// Buttons Row
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: OutlinedButton(
+                                                onPressed: () => Get.back(),
+                                                style: OutlinedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                                child: Text("Cancel"),
+                                              ),
+                                            ),
+                                            SizedBox(width: 12),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Get.offAll(() => LoginScreen());
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                                child: Text("Logout"),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                barrierDismissible: false,
+                              );
                             },
                           ),
                         ],

@@ -14,7 +14,7 @@ class VatListingScreen extends StatelessWidget {
         showBackArrow: true,
         showDivider: false,
         title: Text(
-          "VAT Listing",
+          "GST Extract",
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w600,
