@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:sole/features/dashboard/pages/consolidated_report/consolidated_report_screen.dart';
-import 'package:sole/features/dashboard/pages/vat_listing/vat_listing_screen.dart';
+import 'package:sole/features/dashboard/pages/gst_extract/gst_extract_screen.dart';
 import 'package:sole/routes/routes.dart';
 
 import '../../../utils/constants/images.dart';
@@ -9,7 +9,7 @@ class ReportsController extends GetxController {
   List reportList = [
     {"icon": UImages.balanceSheetIcon, "text": "Balance Sheet"},
     {"icon": UImages.transactionListingIcon, "text": "Transaction Listing"},
-    {"icon": UImages.gSTExtractIcon, "text": "VAT Listing"},
+    {"icon": UImages.gSTExtractIcon, "text": "GST Extract"},
     {"icon": UImages.assetListingIcon, "text": "Asset Listing"},
     {"icon": UImages.profitLossIcon, "text": "Profit & Loss"},
     {"icon": UImages.customerSupplierIcon, "text": "Customer / Supplier"},
