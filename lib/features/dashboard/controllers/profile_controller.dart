@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
 import '../../../data/repositories/profile_repository.dart';
+import '../../../data/repositories/auth_repository.dart';
+import '../../../data/services/auth_storage_service.dart';
 import '../../../data/models/user_model.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository _profileRepository = ProfileRepository();
+  final AuthRepository _authRepository = AuthRepository();
+  final AuthStorageService _authStorageService = AuthStorageService();
 
   // User profile data
   final Rx<UserModel?> userProfile = Rx<UserModel?>(null);
@@ -64,5 +68,31 @@ class ProfileController extends GetxController {
   /// Get email
   String get email {
     return userProfile.value?.email ?? '';
+  }
+
+  /// Logout user
+  Future<bool> logout() async {
+    try {
+      // Call logout API
+      final response = await _authRepository.logout();
+
+      // Clear local storage regardless of API response
+      await _authStorageService.clearAuth();
+
+      if (response.success) {
+        print('✅ Logout successful');
+        return true;
+      } else {
+        print(
+          '⚠️ Logout API failed but local data cleared: ${response.message}',
+        );
+        return true; // Still return true since local data is cleared
+      }
+    } catch (e) {
+      print('❌ Error during logout: $e');
+      // Even if API call fails, clear local storage
+      await _authStorageService.clearAuth();
+      return true; // Return true since we still cleared local data
+    }
   }
 }

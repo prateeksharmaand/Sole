@@ -103,6 +103,12 @@ class TransactionsController extends GetxController {
     selectedAccountIndex.value = index;
   }
 
+  /// Check if user is logged in
+  bool _isUserLoggedIn() {
+    final token = _storage.read('auth_token');
+    return token != null && token.toString().isNotEmpty;
+  }
+
   /// Upload bulk transactions from CSV file
   Future<void> uploadBulkTransactions() async {
     try {
@@ -182,6 +188,12 @@ class TransactionsController extends GetxController {
 
   /// Fetch transactions from API
   Future<void> fetchTransactions({bool refresh = false}) async {
+    // Check if user is logged in
+    if (!_isUserLoggedIn()) {
+      print('⚠️ User not logged in, skipping API call');
+      return;
+    }
+
     if (refresh) {
       currentPage.value = 1;
       allTransactions.clear();

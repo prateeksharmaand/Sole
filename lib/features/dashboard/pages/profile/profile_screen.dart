@@ -224,7 +224,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               isArrow: false,
                               textColor: UColors.textRed414B,
                               onTap: () {
-                                Get.offAll(() => LoginScreen());
+                                _showLogoutDialog(context);
                               },
                             ),
                           ],
@@ -278,6 +278,90 @@ class CommonContainer extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Show logout confirmation dialog
+void _showLogoutDialog(BuildContext context) {
+  Get.dialog(
+    AlertDialog(
+      backgroundColor: UColors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      title: Text(
+        'Logout',
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: UColors.textPrimary,
+        ),
+      ),
+      content: Text(
+        'Are you sure you want to logout?',
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: UColors.textSecondary,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(),
+          child: Text(
+            'Cancel',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: UColors.textSecondary,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () async {
+            // Close dialog
+            Get.back();
+
+            // Show loading indicator
+            Get.dialog(
+              Center(child: CircularProgressIndicator(color: UColors.primary)),
+              barrierDismissible: false,
+            );
+
+            // Get controller from GetX
+            final controller = Get.find<ProfileController>();
+
+            // Perform logout
+            final success = await controller.logout();
+
+            // Close loading indicator
+            Get.back();
+
+            if (success) {
+              // Navigate to login screen and clear all previous routes
+              Get.offAll(() => LoginScreen());
+            } else {
+              // Show error message
+              Get.snackbar(
+                'Error',
+                'Failed to logout. Please try again.',
+                backgroundColor: UColors.textRed414B.withOpacity(0.1),
+                colorText: UColors.textRed414B,
+                snackPosition: SnackPosition.BOTTOM,
+                margin: EdgeInsets.all(16),
+              );
+            }
+          },
+          child: Text(
+            'Logout',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: UColors.textRed414B,
+            ),
+          ),
+        ),
+      ],
+    ),
+    barrierDismissible: true,
+  );
 }
 
 class IconText extends StatelessWidget {

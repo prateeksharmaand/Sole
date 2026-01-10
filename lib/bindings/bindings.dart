@@ -74,6 +74,9 @@ class UBindings extends Bindings {
 
     Get.put(AuthController());
     Get.put(OnboardingController());
-    Get.put(TransactionsController());
+    Get.lazyPut<TransactionsController>(
+      () => TransactionsController(),
+      fenix: true,
+    );
   }
 }
