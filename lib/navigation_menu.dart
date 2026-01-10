@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sole/features/dashboard/controllers/expense_controller.dart';
+import 'package:sole/features/dashboard/controllers/reports_controller.dart';
+import 'package:sole/features/dashboard/pages/dashboard/dashboard_controller.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
@@ -29,9 +32,7 @@ class NavigationMenu extends StatelessWidget {
           backgroundColor: dark ? UColors.dark : UColors.light,
           indicatorColor: Colors.transparent,
           selectedIndex: controller.selectedIndex.value,
-          onDestinationSelected: (index) {
-            controller.selectedIndex.value = index;
-          },
+          onDestinationSelected: controller.onMenuTap,
 
           /// 🔹 TEXT COLOR CONTROL
           labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
@@ -111,4 +112,29 @@ class NavigationController extends GetxController {
     ReportsScreen(),
     ProfileScreen(),
   ];
+  void onMenuTap(int index) {
+    selectedIndex.value = index;
+
+    // Fetch dashboard data when user navigates to dashboard tab
+    if (index == 0) {
+      try {
+        final dashboardController = Get.find<DashboardController>();
+        dashboardController.fetchDashboardData();
+      } catch (e) {
+        print('⚠️ Dashboard controller not found: $e');
+      }
+    }
+  }
+}
+
+class NavigationBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(NavigationController());
+    Get.put(DashboardController());
+    // Get.put(InvoicesController());
+    Get.put(ExpenseController());
+    Get.put(ReportsController());
+    // Get.put(ProfileController());
+  }
 }

@@ -34,37 +34,77 @@ class NewAssetsScreen extends GetView<AssetsController> {
               // dotted Border Container
               ReceiptUploadBox(),
               SizedBox(height: USizes.lg),
-              UTextField2(hintText: "Enter asset name", titleText: "New Asset"),
+              UTextField2(
+                controller: controller.assetNameController,
+                hintText: "Enter asset name",
+                titleText: "New Asset",
+              ),
               SizedBox(height: USizes.xl),
               UTextField2(
+                controller: controller.assetValueController,
                 hintText: "Enter price",
                 titleText: "Asset Value",
                 prefixWidget: SvgPicture.asset(UImages.rupeeIcon),
+                keyboardType: TextInputType.number,
               ),
               SizedBox(height: USizes.lg),
               UTextField2(
+                controller: controller.datePurchaseController,
                 hintText: "Date Purchased",
                 titleText: "Enter date",
                 prefixWidget: SvgPicture.asset(UImages.calendarLineIcon),
                 suffix: Icon(Icons.keyboard_arrow_down_outlined),
+                isReadOnly: true,
+                onTap: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2100),
+                  );
+                  if (picked != null) {
+                    controller.datePurchaseController.text =
+                        "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+                  }
+                },
               ),
               SizedBox(height: USizes.lg),
-              Obx(
-                () => UDropDown<String>(
+              Obx(() {
+                if (controller.isLoadingClients.value) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Supplier",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: UColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: USizes.sm),
+                      Center(child: CircularProgressIndicator()),
+                    ],
+                  );
+                }
+
+                return UDropDown<int>(
                   label: "Supplier",
-                  hint: "Select suplier",
-                  value: controller.selectedReport.value,
-                  items: controller.reports
+                  hint: "Select supplier",
+                  value: controller.selectedClientId.value,
+                  items: controller.clientsList
                       .map(
-                        (e) =>
-                            DropdownMenuItem<String>(value: e, child: Text(e)),
+                        (client) => DropdownMenuItem<int>(
+                          value: client.clientId,
+                          child: Text(client.name),
+                        ),
                       )
                       .toList(),
                   onChanged: (value) {
-                    controller.selectedReport.value = value;
+                    controller.selectedClientId.value = value;
                   },
-                ),
-              ),
+                );
+              }),
               SizedBox(height: USizes.lg),
               Obx(
                 () => UDropDown<String>(
@@ -140,6 +180,24 @@ class NewAssetsScreen extends GetView<AssetsController> {
                 ),
               ),
               SizedBox(height: USizes.lg),
+
+              // Save Button
+              Obx(
+                () => SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: UButton(
+                    onPressed: controller.isSavingAsset.value
+                        ? null
+                        : controller.createNewAsset,
+                    label: controller.isSavingAsset.value
+                        ? "Saving..."
+                        : "Save Asset",
+                    bgColor: UColors.primary,
+                    textColor: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -154,105 +212,103 @@ class ReceiptUploadBox extends GetView<AssetsController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-          () => controller.receiptImage.value == null
+      () => controller.receiptImage.value == null
           ? GestureDetector(
-        onTap: controller.pickFromGallery,
-        child: DottedBorder(
-          borderType: RoundedRectDottedBorder(
-            color: UColors.borderB3FF,
-            dashGap: 4,
-            dashWidth: 4,
-            strokeWidth: 2,
-            radius: const Radius.circular(12),
-          ),
-          child: SizedBox(
-            height: 185,
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(Icons.add),
-                SizedBox(height: USizes.lg),
-                Text(
-                  "Add a Photo or Receipt",
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                    color: UColors.textPrimary,
-                  ),
+              onTap: controller.pickFromGallery,
+              child: DottedBorder(
+                borderType: RoundedRectDottedBorder(
+                  color: UColors.borderB3FF,
+                  dashGap: 4,
+                  dashWidth: 4,
+                  strokeWidth: 2,
+                  radius: const Radius.circular(12),
                 ),
-                SizedBox(height: USizes.xs),
-                Text(
-                  "JPEG, PNG, or JPG formats, up to 5 MB.",
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
-                    color: UColors.text8C98,
-                  ),
-                ),
-                SizedBox(height: USizes.md),
+                child: SizedBox(
+                  height: 185,
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.add),
+                      SizedBox(height: USizes.lg),
+                      Text(
+                        "Add a Photo or Receipt",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: UColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: USizes.xs),
+                      Text(
+                        "JPEG, PNG, or JPG formats, up to 5 MB.",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: UColors.text8C98,
+                        ),
+                      ),
+                      SizedBox(height: USizes.md),
 
-                /// Browse Button
-                SizedBox(
-                  height: 38,
-                  width: 130,
-                  child: UButton(
-                    onPressed: controller.pickFromGallery,
-                    label: "Browse File",
-                    textColor: UColors.primary,
-                    borderColor: UColors.primary,
-                    bgColor: Colors.white,
+                      /// Browse Button
+                      SizedBox(
+                        height: 38,
+                        width: 130,
+                        child: UButton(
+                          onPressed: controller.pickFromGallery,
+                          label: "Browse File",
+                          textColor: UColors.primary,
+                          borderColor: UColors.primary,
+                          bgColor: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          /// ===== IMAGE VIEW =====
+          : Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    height: 185,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.black12,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Image.file(
+                      controller.receiptImage.value!,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                /// CLEAR ICON
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: GestureDetector(
+                    onTap: controller.clearImage,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-      )
-
-      /// ===== IMAGE VIEW =====
-          : Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              height: 185,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Image.file(
-                controller.receiptImage.value!,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          /// CLEAR ICON
-          Positioned(
-            right: 6,
-            top: 6,
-            child: GestureDetector(
-              onTap: controller.clearImage,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
-

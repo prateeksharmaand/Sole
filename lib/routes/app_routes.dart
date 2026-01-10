@@ -3,8 +3,8 @@ import 'package:sole/features/authentication/screens/onboarding/onboarding_scree
 import 'package:sole/features/dashboard/pages/communication_preferences/communication_preferences_screen.dart';
 import 'package:sole/loading.dart';
 import 'package:sole/routes/routes.dart';
-import '../features/dashboard/pages/add_expenses/add_expenses_screen.dart';
-import '../features/dashboard/pages/add_expenses/details_expenses_screen.dart';
+import '../features/dashboard/pages/expense/add_expenses/add_expenses_screen.dart';
+import '../features/dashboard/pages/expense/add_expenses/details_expenses_screen.dart';
 import '../features/dashboard/pages/assets/assets_screen.dart';
 import '../features/dashboard/pages/assets/new_assets_screen.dart';
 import '../features/dashboard/pages/assets_listing/assets_listing_screen.dart';
@@ -22,11 +22,17 @@ import '../features/dashboard/pages/reports/profit_loss/profit_loss_screen.dart'
 import '../features/dashboard/pages/webview/webview_screen.dart';
 import '../features/dashboard/pages/transaction_listing/transaction_listing_screen.dart';
 import '../features/dashboard/pages/trial_balance/trial_balance_screen.dart';
+import '../navigation_menu.dart';
 
 class UAppRoutes {
   static final screens = [
     GetPage(name: URoutes.home, page: () => const LoadingScreen()),
     GetPage(name: URoutes.onBoarding, page: () => OnboardingScreen()),
+    GetPage(
+      name: URoutes.dashboard,
+      page: () => const NavigationMenu(),
+      binding: NavigationBinding(),
+    ),
     GetPage(
       name: URoutes.communicationScreen,
       page: () => CommunicationPreferencesScreen(),
@@ -46,8 +52,14 @@ class UAppRoutes {
     ),
     GetPage(name: URoutes.auditTrailScreen, page: () => AuditTrailScreen()),
     GetPage(name: URoutes.cashFlowScreen, page: () => CashFlowScreen()),
-    GetPage(name: URoutes.chartOfAccountsScreen, page: () => ChartOfAccountsScreen()),
-    GetPage(name: URoutes.assetsListingScreen, page: () => AssetsListingScreen()),
+    GetPage(
+      name: URoutes.chartOfAccountsScreen,
+      page: () => ChartOfAccountsScreen(),
+    ),
+    GetPage(
+      name: URoutes.assetsListingScreen,
+      page: () => AssetsListingScreen(),
+    ),
     GetPage(
       name: URoutes.invoiceQuoteBrandingScreen,
       page: () => InvoiceQuoteBrandingScreen(),
@@ -70,6 +82,9 @@ class UAppRoutes {
     ),
     GetPage(name: URoutes.basReportsScreen, page: () => BasReportsScreen()),
     GetPage(name: URoutes.trialBalanceScreen, page: () => TrialBalanceScreen()),
-    GetPage(name: URoutes.transactionListingScreen, page: () => TransactionListingScreen()),
+    GetPage(
+      name: URoutes.transactionListingScreen,
+      page: () => TransactionListingScreen(),
+    ),
   ];
 }

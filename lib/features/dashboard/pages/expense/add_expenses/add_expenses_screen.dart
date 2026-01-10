@@ -4,17 +4,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/common/widgets/appbar/appbar.dart';
-import 'package:sole/routes/routes.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../../../common/widgets/app_btn/app_btn.dart';
-import '../../../../common/widgets/drop_down/u_drop_down_underLine.dart';
-import '../../../../common/widgets/switch_btn/switch_btn.dart';
-import '../../../../common/widgets/textfields/app_text_fields.dart';
-import '../../../../utils/constants/images.dart';
-import '../../../../utils/constants/sizes.dart';
-import '../../controllers/add_expenses_controller.dart';
+import '../../../../../common/widgets/app_btn/app_btn.dart';
+import '../../../../../common/widgets/drop_down/u_drop_down_underLine.dart';
+import '../../../../../common/widgets/switch_btn/switch_btn.dart';
+import '../../../../../common/widgets/textfields/app_text_fields.dart';
+import '../../../../../utils/constants/images.dart';
+import '../../../../../utils/constants/sizes.dart';
+import '../../../controllers/add_expenses_controller.dart';
 
 class AddExpensesScreen extends GetView<AddExpensesController> {
   const AddExpensesScreen({super.key});
@@ -44,18 +43,28 @@ class AddExpensesScreen extends GetView<AddExpensesController> {
               ReceiptUploadBox(),
               SizedBox(height: USizes.lg),
               UTextField2(
+                controller: controller.nameController,
+                hintText: "Enter expense name",
+                titleText: "Expense Name*",
+              ),
+              SizedBox(height: USizes.lg),
+              UTextField2(
+                controller: controller.descriptionController,
                 hintText: "Write descriptions...",
-                titleText: "Expense Description",
+                titleText: "Expense Description*",
               ),
               SizedBox(height: USizes.xl),
               Row(
                 children: [
                   Expanded(
                     child: UTextField2(
+                      controller: controller.priceController,
                       hintText: "Enter price",
                       titleText: "Price*",
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       prefixWidget: SvgPicture.asset(UImages.rupeeIcon),
-                      suffix: Icon(Icons.keyboard_arrow_down_outlined),
                     ),
                   ),
                   SizedBox(width: USizes.md),
@@ -79,22 +88,131 @@ class AddExpensesScreen extends GetView<AddExpensesController> {
                 ],
               ),
               SizedBox(height: USizes.lg),
-              Obx(
-                () => UDropDown<String>(
-                  label: "Supplier",
-                  hint: "Select suplier",
-                  value: controller.selectedReport.value,
-                  items: controller.reports
-                      .map(
-                        (e) =>
-                            DropdownMenuItem<String>(value: e, child: Text(e)),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    controller.selectedReport.value = value;
+              Obx(() {
+                // State 1: Loading - Show spinner
+                if (controller.isLoadingClients.value) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Client*",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: UColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: USizes.sm),
+                      Container(
+                        padding: EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: UColors.borderB3FF),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: UColors.primary,
+                              ),
+                            ),
+                            SizedBox(width: USizes.sm),
+                            Text(
+                              "Loading clients...",
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: UColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                // State 2: Empty after loading - Show error
+                if (controller.hasLoadedClients.value &&
+                    controller.clients.isEmpty) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Client*",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 14,
+                          color: UColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: USizes.sm),
+                      Container(
+                        padding: EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: UColors.red3137),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: UColors.red3137,
+                              size: 20,
+                            ),
+                            SizedBox(width: USizes.sm),
+                            Expanded(
+                              child: Text(
+                                "No clients found. Please add a client first.",
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 12,
+                                  color: UColors.red3137,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                // State 3: Initial state or Has clients - Show dropdown with tap to load
+                return GestureDetector(
+                  onTap: () {
+                    // Load clients when field is tapped (if not already loaded)
+                    controller.loadClients();
                   },
-                ),
-              ),
+                  child: AbsorbPointer(
+                    absorbing: controller.isLoadingClients.value,
+                    child: UDropDown<int>(
+                      label: "Client*",
+                      hint: controller.clients.isEmpty
+                          ? "Tap to load clients"
+                          : "Select client",
+                      value: controller.selectedClientId.value,
+                      items: controller.clients.isEmpty
+                          ? [] // Empty list for initial state
+                          : controller.clients
+                                .map(
+                                  (client) => DropdownMenuItem<int>(
+                                    value: client.clientId,
+                                    child: Text(client.name),
+                                  ),
+                                )
+                                .toList(),
+                      onChanged: (value) {
+                        if (controller.clients.isNotEmpty) {
+                          controller.selectedClientId.value = value;
+                        }
+                      },
+                    ),
+                  ),
+                );
+              }),
               SizedBox(height: USizes.lg),
               Obx(
                 () => UDropDown<String>(
@@ -170,11 +288,14 @@ class AddExpensesScreen extends GetView<AddExpensesController> {
                 ),
               ),
               SizedBox(height: USizes.lg),
-              UButton(
-                label: "Save",
-                onPressed: () {
-                  Get.toNamed(URoutes.detailsExpensesScreen);
-                },
+              Obx(
+                () => UButton(
+                  label: controller.isSaving.value ? "Saving..." : "Save",
+                  isLoading: controller.isSaving.value,
+                  onPressed: controller.isSaving.value
+                      ? () {} // Disable when saving
+                      : controller.createExpense,
+                ),
               ),
               SizedBox(height: UDeviceHelper.getBottomNavigationBarHeight()),
             ],
@@ -316,9 +437,8 @@ class ReceiptUploadBox extends GetView<AddExpensesController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-          () => Column(
+      () => Column(
         children: [
-
           /// IF IMAGE SELECTED
           if (controller.selectedImage.value != null)
             Stack(
@@ -355,7 +475,6 @@ class ReceiptUploadBox extends GetView<AddExpensesController> {
                 ),
               ],
             )
-
           /// ELSE SHOW DOTTED BOX
           else
             GestureDetector(
@@ -439,4 +558,3 @@ class ReceiptUploadBox extends GetView<AddExpensesController> {
     );
   }
 }
-

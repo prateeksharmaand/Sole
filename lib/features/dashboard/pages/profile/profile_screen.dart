@@ -8,194 +8,236 @@ import 'package:sole/features/dashboard/pages/support/support_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
+import '../../controllers/profile_controller.dart';
 import '../accountant/accountant_screen.dart';
 import '../communication_preferences/communication_preferences_screen.dart';
 import '../profile_branding/profile_branding_screen.dart';
 import '../subscriptions/subscriptions_screen.dart';
 import '../taxes_bankings/taxes_banking_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends GetView<ProfileController> {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Initialize controller if not already done
+    Get.put(ProfileController());
+
     return Scaffold(
       backgroundColor: UColors.bg,
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              SizedBox(
-                height: 260,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image(
-                      image: AssetImage(UImages.bgProfileScreen),
-                      width: double.infinity,
-                      height: 148,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(height: USizes.lg * 1.8),
-                    Padding(
-                      padding: EdgeInsets.only(left: USizes.defaultSpace20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Gissele Alexandra",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: UColors.textPrimary,
-                            ),
-                          ),
-                          Text(
-                            "gisselealexandra@gmail.com",
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: UColors.textSecondary,
-                            ),
-                          ),
-                        ],
+      body: Obx(() {
+        // Show loading indicator while fetching profile
+        if (controller.isLoading.value &&
+            controller.userProfile.value == null) {
+          return Center(
+            child: CircularProgressIndicator(color: UColors.primary),
+          );
+        }
+
+        return Column(
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: 260,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image(
+                        image: AssetImage(UImages.bgProfileScreen),
+                        width: double.infinity,
+                        height: 148,
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                left: USizes.defaultSpace20,
-                top: 115,
-                child: Container(
-                  height: 66,
-                  width: 66,
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: UColors.white,
-                    shape: BoxShape.circle,
+                      SizedBox(height: USizes.lg * 1.8),
+                      Padding(
+                        padding: EdgeInsets.only(left: USizes.defaultSpace20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              controller.displayName,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: UColors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              controller.email,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: UColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  child: const Image(
-                    image: AssetImage("assets/images/img/user_profile.png"),
-                    fit: BoxFit.cover,
-                  ),
                 ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.only(
+                Positioned(
                   left: USizes.defaultSpace20,
-                  right: USizes.defaultSpace20,
-                ),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 260,
-                      child: ListView.builder(
-                        itemCount: 2,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 12),
-                            child: SizedBox(
-                              width: 330, // ✅ MUST HAVE WIDTH
-                              child: BusinessInformationCard(),
+                  top: 115,
+                  child: Container(
+                    height: 66,
+                    width: 66,
+                    padding: EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: UColors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child:
+                        controller.profilePictureUrl != null &&
+                            controller.profilePictureUrl!.isNotEmpty
+                        ? ClipOval(
+                            child: Image.network(
+                              controller.profilePictureUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: UColors.primary.withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 40,
+                                      color: UColors.primary,
+                                    ),
+                                  ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        vertical: USizes.defaultSpace20,
-                      ),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: UColors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        children: [
-                          IconText(
-                            icon: UImages.personIcon,
-                            text: "Profile & Branding",
-                            onTap: () {
-                              Get.to(() => ProfileBrandingScreen());
-                            },
+                          )
+                        : Container(
+                            decoration: BoxDecoration(
+                              color: UColors.primary.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              size: 40,
+                              color: UColors.primary,
+                            ),
                           ),
-                          IconText(
-                            icon: UImages.cardIcon,
-                            text: "Taxes & Banking",
-                            onTap: () {
-                              Get.to(() => TaxesBankingScreen());
-                            },
-                          ),
-                          IconText(
-                            icon: UImages.percentageIcon,
-                            text: "Accountant",
-                            onTap: () {
-                              Get.to(() => AccountantScreen());
-                            },
-                          ),
-                          IconText(
-                            icon: UImages.calendarIcon,
-                            text: "Subscriptions",
-                            onTap: () {
-                              Get.to(() => SubscriptionsScreen());
-                            },
-                          ),
-                          IconText(
-                            icon: UImages.communicationIcon,
-                            text: "Communication Preferences",
-                            isDivider: false,
-                            onTap: () {
-                              Get.to(() => CommunicationPreferencesScreen());
-                            },
-                          ),
-                        ],
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: USizes.defaultSpace20,
+                    right: USizes.defaultSpace20,
+                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 260,
+                        child: ListView.builder(
+                          itemCount: 2,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: SizedBox(
+                                width: 330, // ✅ MUST HAVE WIDTH
+                                child: BusinessInformationCard(),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                        vertical: USizes.defaultSpace20,
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: USizes.defaultSpace20,
+                        ),
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: UColors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            IconText(
+                              icon: UImages.personIcon,
+                              text: "Profile & Branding",
+                              onTap: () {
+                                Get.to(() => ProfileBrandingScreen());
+                              },
+                            ),
+                            IconText(
+                              icon: UImages.cardIcon,
+                              text: "Taxes & Banking",
+                              onTap: () {
+                                Get.to(() => TaxesBankingScreen());
+                              },
+                            ),
+                            IconText(
+                              icon: UImages.percentageIcon,
+                              text: "Accountant",
+                              onTap: () {
+                                Get.to(() => AccountantScreen());
+                              },
+                            ),
+                            IconText(
+                              icon: UImages.calendarIcon,
+                              text: "Subscriptions",
+                              onTap: () {
+                                Get.to(() => SubscriptionsScreen());
+                              },
+                            ),
+                            IconText(
+                              icon: UImages.communicationIcon,
+                              text: "Communication Preferences",
+                              isDivider: false,
+                              onTap: () {
+                                Get.to(() => CommunicationPreferencesScreen());
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: UColors.white,
-                        borderRadius: BorderRadius.circular(16),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                          vertical: USizes.defaultSpace20,
+                        ),
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: UColors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            IconText(
+                              icon: UImages.headphoneIcon,
+                              text: "Support",
+                              onTap: () {
+                                Get.to(() => SupportScreen());
+                              },
+                            ),
+                            IconText(
+                              icon: UImages.logoutIcon,
+                              text: "Logout",
+                              isDivider: false,
+                              isArrow: false,
+                              textColor: UColors.textRed414B,
+                              onTap: () {
+                                Get.offAll(() => LoginScreen());
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        children: [
-                          IconText(
-                            icon: UImages.headphoneIcon,
-                            text: "Support",
-                            onTap: (){
-                              Get.to(()=>SupportScreen());
-                            },
-                          ),
-                          IconText(
-                            icon: UImages.logoutIcon,
-                            text: "Logout",
-                            isDivider: false,
-                            isArrow: false,
-                            textColor: UColors.textRed414B,
-                            onTap: () {
-                              Get.offAll(() => LoginScreen());
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

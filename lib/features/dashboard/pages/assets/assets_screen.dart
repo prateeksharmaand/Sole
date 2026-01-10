@@ -10,6 +10,7 @@ import '../../../../common/widgets/textfields/app_text_fields.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/images.dart';
 import '../../../../utils/constants/sizes.dart';
+import '../../../../utils/widgets/shimmer_loading.dart';
 import '../../controllers/assets_controller.dart';
 
 class AssetsScreen extends GetView<AssetsController> {
@@ -46,83 +47,116 @@ class AssetsScreen extends GetView<AssetsController> {
                 SizedBox(width: USizes.sm),
                 GestureDetector(
                   onTap: () {},
-                  child: SvgPicture.asset(UImages.filterIcon,height: 46),
+                  child: SvgPicture.asset(UImages.filterIcon, height: 46),
                 ),
                 SizedBox(width: USizes.sm),
                 GestureDetector(
                   onTap: () {},
-                  child: SvgPicture.asset(UImages.downloadIcon,height: 46 ),
+                  child: SvgPicture.asset(UImages.downloadIcon, height: 46),
                 ),
               ],
             ),
             SizedBox(height: USizes.lg),
             Expanded(
-              child: Container(
-                padding: EdgeInsets.all(USizes.md),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: ListView.builder(
-                  itemCount: 10,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: USizes.lg),
-                      child: Row(
-                        children: [
-                          SvgPicture.asset(UImages.expensesIcon),
-                          SizedBox(width: USizes.md),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              child: Obx(() {
+                if (controller.isLoadingAssets.value &&
+                    controller.assetsList.isEmpty) {
+                  return UShimmer.assetsListLoading(context, dark: false);
+                }
+
+                if (controller.assetsList.isEmpty) {
+                  return Container(
+                    padding: EdgeInsets.all(USizes.md),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'No assets found',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          color: UColors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return Container(
+                  padding: EdgeInsets.all(USizes.md),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: RefreshIndicator(
+                    onRefresh: controller.refreshAssets,
+                    child: ListView.builder(
+                      itemCount: controller.assetsList.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        final asset = controller.assetsList[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: USizes.lg),
+                          child: Row(
                             children: [
-                              Text(
-                                "Ergonomic Office Chairs",
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: UColors.textPrimary,
-                                ),
-                              ),
-                              SizedBox(height: USizes.xs),
-                              Row(
-                                children: [
-                                  Text(
-                                    "\$1,100.00",
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 11,
-                                      color: UColors.textSecondary,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: USizes.sm,
-                                    ),
-                                    child: DotContainer(
-                                      color: UColors.textSecondary.withValues(
-                                        alpha: .3,
+                              SvgPicture.asset(UImages.expensesIcon),
+                              SizedBox(width: USizes.md),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      asset.name,
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: UColors.textPrimary,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                  ),
-                                  Text(
-                                    "04-09-2025",
-                                    style: GoogleFonts.plusJakartaSans(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 11,
-                                      color: UColors.textSecondary,
+                                    SizedBox(height: USizes.xs),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "\$${asset.price}",
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 11,
+                                            color: UColors.textSecondary,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: USizes.sm,
+                                          ),
+                                          child: DotContainer(
+                                            color: UColors.textSecondary
+                                                .withValues(alpha: .3),
+                                          ),
+                                        ),
+                                        Text(
+                                          asset.dateOfPurchase,
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 11,
+                                            color: UColors.textSecondary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }),
             ),
           ],
         ),

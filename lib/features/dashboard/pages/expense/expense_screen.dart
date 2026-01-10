@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sole/common/widgets/textfields/app_text_fields.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
+import 'package:sole/routes/routes.dart';
 import '../../controllers/expense_controller.dart';
 import '../assets/assets_screen.dart';
 import '../taxes_bankings/taxes_banking_screen.dart';
@@ -104,11 +106,13 @@ class ExpenseScreen extends GetView<ExpenseController> {
                     ),
                   ),
                   SizedBox(height: USizes.md),
-                  CommonTextPrizePercent(
-                    text: 'Total Expenses',
-                    prize: '\$512k',
-                    percent: '+2.5%',
-                    isProfit: true,
+                  Obx(
+                    () => CommonTextPrizePercent(
+                      text: 'Total Expenses',
+                      prize: '\$${controller.totalExpenses.value}',
+                      percent: '+2.5%',
+                      isProfit: true,
+                    ),
                   ),
                   SizedBox(height: USizes.md),
                   Divider(color: UColors.divider),
@@ -138,12 +142,21 @@ class ExpenseScreen extends GetView<ExpenseController> {
             /// search and filter
             Row(
               children: [
-                UCommonSearch(),
+                Expanded(
+                  child: UTextField(
+                    hintText: "Search expenses...",
+                    onchanged: (value) {
+                      controller.searchExpenses(value);
+                    },
+                    prefixWidget: Padding(
+                      padding: EdgeInsets.only(left: USizes.sm),
+                      child: Icon(Icons.search),
+                    ),
+                  ),
+                ),
                 SizedBox(width: USizes.sm),
                 GestureDetector(
                   onTap: () {
-                    Get.put(ExpenseController());
-
                     Get.bottomSheet(
                       ExpenseFilterBottomSheet(),
                       isScrollControlled: true,
@@ -168,77 +181,231 @@ class ExpenseScreen extends GetView<ExpenseController> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: ListView.builder(
-                  itemCount: 10,
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: USizes.lg),
-                      child: Row(
+                child: Obx(() {
+                  // Loading state
+                  if (controller.isLoading.value &&
+                      controller.expenses.isEmpty) {
+                    return Center(
+                      child: CircularProgressIndicator(color: UColors.primary),
+                    );
+                  }
+
+                  // Empty state
+                  if (controller.expenses.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SvgPicture.asset(UImages.assetsListIcon),
-                          SizedBox(width: USizes.md),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Accountancy Expenses",
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: UColors.textPrimary,
-                                  ),
-                                ),
-                                SizedBox(height: USizes.xs),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Bunnings",
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 11,
-                                        color: UColors.textSecondary,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: USizes.sm,
-                                      ),
-                                      child: DotContainer(
-                                        color: UColors.textSecondary.withValues(
-                                          alpha: .3,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      "2 Days ago",
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 11,
-                                        color: UColors.textSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                          Icon(
+                            Icons.receipt_long_outlined,
+                            size: 64,
+                            color: UColors.textSecondary.withValues(alpha: 0.5),
+                          ),
+                          SizedBox(height: USizes.md),
+                          Text(
+                            'No expenses found',
+                            style: GoogleFonts.plusJakartaSans(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: UColors.textSecondary,
                             ),
                           ),
-                          SizedBox(width: USizes.md),
+                          SizedBox(height: USizes.sm),
                           Text(
-                            "\$10.22",
+                            'Add your first expense to get started',
                             style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w400,
                               fontSize: 12,
-                              color: UColors.textPrimary,
+                              color: UColors.textSecondary,
                             ),
                           ),
                         ],
                       ),
                     );
-                  },
-                ),
+                  }
+
+                  // List with data
+                  return RefreshIndicator(
+                    onRefresh: controller.refreshExpenses,
+                    color: UColors.primary,
+                    child: ListView.builder(
+                      controller: controller.scrollController,
+                      itemCount:
+                          controller.expenses.length +
+                          (controller.isLoadingMore.value ? 1 : 0),
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemBuilder: (context, index) {
+                        // Loading more indicator at bottom
+                        if (index == controller.expenses.length) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: UColors.primary,
+                              ),
+                            ),
+                          );
+                        }
+
+                        final expense = controller.expenses[index];
+
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to details screen with expense ID
+                            Get.toNamed(
+                              URoutes.detailsExpensesScreen,
+                              arguments: expense.expenseId,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: USizes.lg),
+                            child: Row(
+                              children: [
+                                // Expense icon/image
+                                expense.image != null &&
+                                        expense.image!.isNotEmpty
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          expense.image!,
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  SvgPicture.asset(
+                                                    UImages.assetsListIcon,
+                                                  ),
+                                        ),
+                                      )
+                                    : SvgPicture.asset(UImages.assetsListIcon),
+                                SizedBox(width: USizes.md),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Expense name
+                                      Text(
+                                        expense.name,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                          color: UColors.textPrimary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: USizes.xs),
+                                      Row(
+                                        children: [
+                                          // Client name
+                                          Text(
+                                            expense.client.name,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 11,
+                                              color: UColors.textSecondary,
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: USizes.sm,
+                                            ),
+                                            child: DotContainer(
+                                              color: UColors.textSecondary
+                                                  .withValues(alpha: .3),
+                                            ),
+                                          ),
+                                          // Date
+                                          Text(
+                                            expense.date,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 11,
+                                              color: UColors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      // Classifications/Tags
+                                      if (expense.classifications.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 4,
+                                          ),
+                                          child: Wrap(
+                                            spacing: 4,
+                                            children: expense.classifications
+                                                .take(3)
+                                                .map(
+                                                  (classification) => Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 2,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: UColors.primary
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            4,
+                                                          ),
+                                                    ),
+                                                    child: Text(
+                                                      classification.name,
+                                                      style:
+                                                          GoogleFonts.plusJakartaSans(
+                                                            fontSize: 9,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color:
+                                                                UColors.primary,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: USizes.md),
+                                // Price
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '\$${expense.price}',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        color: UColors.textPrimary,
+                                      ),
+                                    ),
+                                    if (expense.gst == 1)
+                                      Text(
+                                        'incl. GST',
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 9,
+                                          color: UColors.textSecondary,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }),
               ),
             ),
           ],
@@ -327,6 +494,11 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Load clients and suppliers when filter sheet opens
+    if (controller.clients.isEmpty) {
+      controller.loadClients();
+    }
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
@@ -378,25 +550,37 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
 
           /// PRICE RANGE
           const Text("Price"),
-          Obx(
-            () => RangeSlider(
+          Obx(() {
+            // Compute the effective max value
+            final effectiveMax = controller.maxPrice.value > 0
+                ? controller.maxPrice.value
+                : 1000.0;
+
+            // Ensure values are within valid range
+            final clampedMin = controller.minPrice.value.clamp(
+              0.0,
+              effectiveMax,
+            );
+            final clampedMax = controller.maxPriceFilter.value.clamp(
+              0.0,
+              effectiveMax,
+            );
+
+            return RangeSlider(
               min: 0,
-              max: 1000,
+              max: effectiveMax,
               activeColor: UColors.primary,
               inactiveColor: UColors.textSecondary.withValues(alpha: .4),
-              values: RangeValues(
-                controller.minPrice.value,
-                controller.maxPrice.value,
-              ),
+              values: RangeValues(clampedMin, clampedMax),
               onChanged: (value) {
                 controller.minPrice.value = value.start;
-                controller.maxPrice.value = value.end;
+                controller.maxPriceFilter.value = value.end;
               },
-            ),
-          ),
+            );
+          }),
           Obx(
             () => Text(
-              "\$ ${controller.minPrice.value.toInt()} - \$ ${controller.maxPrice.value.toInt()}",
+              "\$ ${controller.minPrice.value.toInt()} - \$ ${controller.maxPriceFilter.value.toInt()}",
             ),
           ),
 
@@ -418,42 +602,80 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
             ),
           ),
 
+
+
+          const SizedBox(height: 20),
+
+          /// CLIENT
+          const Text("Client"),
+          const SizedBox(height: 8),
+          Obx(() {
+            if (controller.isLoadingClients.value) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Center(
+                  child: SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            }
+
+            return DropdownButtonFormField<int>(
+              value: controller.selectedClientId.value,
+              items: [
+                const DropdownMenuItem<int>(
+                  value: null,
+                  child: Text("All Clients"),
+                ),
+                ...controller.clients.map(
+                  (client) => DropdownMenuItem<int>(
+                    value: client.clientId,
+                    child: Text(client.name),
+                  ),
+                ),
+              ],
+              onChanged: (value) {
+                controller.selectedClientId.value = value;
+              },
+              decoration: const InputDecoration(
+                hintText: "Select client",
+                border: OutlineInputBorder(),
+              ),
+            );
+          }),
           const SizedBox(height: 20),
 
           /// CATEGORY
           const Text("Category"),
           const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            items: const [
-              DropdownMenuItem(value: "Food", child: Text("Food")),
-              DropdownMenuItem(value: "Travel", child: Text("Travel")),
-              DropdownMenuItem(value: "Office", child: Text("Office")),
-            ],
-            onChanged: (value) {},
-            decoration: const InputDecoration(
-              hintText: "Select category",
-              border: OutlineInputBorder(),
+          Obx(
+                () => DropdownButtonFormField<String>(
+              value: controller.selectedCategory.value.isEmpty
+                  ? null
+                  : controller.selectedCategory.value,
+              items: const [
+                DropdownMenuItem(value: "Food", child: Text("Food")),
+                DropdownMenuItem(value: "Travel", child: Text("Travel")),
+                DropdownMenuItem(value: "Office", child: Text("Office")),
+              ],
+              onChanged: (value) {
+                controller.selectedCategory.value = value ?? '';
+              },
+              decoration: const InputDecoration(
+                hintText: "Select category",
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
-
           const SizedBox(height: 20),
 
-          /// SUPPLIER
-          const Text("Supplier"),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            items: const [
-              DropdownMenuItem(value: "Amazon", child: Text("Amazon")),
-              DropdownMenuItem(value: "Flipkart", child: Text("Flipkart")),
-            ],
-            onChanged: (value) {},
-            decoration: const InputDecoration(
-              hintText: "Select supplier",
-              border: OutlineInputBorder(),
-            ),
-          ),
-
-          const SizedBox(height: 20),
 
           /// PAID BY CASH
           Obx(
@@ -485,9 +707,7 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    Get.back(); // Apply filter
-                  },
+                  onPressed: controller.applyFilter,
                   child: const Text("Apply"),
                 ),
               ),

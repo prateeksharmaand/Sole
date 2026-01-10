@@ -14,7 +14,8 @@ class URoutes {
   static const String addExpensesScreen = '/addExpensesScreen';
   static const String detailsExpensesScreen = '/detailsExpensesScreen';
   static const String notificationScreen = '/notificationScreen';
-  static const String invoiceQuoteBrandingScreen = '/invoiceQuoteBrandingScreen';
+  static const String invoiceQuoteBrandingScreen =
+      '/invoiceQuoteBrandingScreen';
   static const String auditTrailScreen = '/auditTrailScreen';
   static const String cashFlowScreen = '/cashFlowScreen';
   static const String chartOfAccountsScreen = '/chartOfAccountsScreen';
@@ -23,10 +24,11 @@ class URoutes {
   static const String basReportsScreen = '/basReportsScreen';
   static const String transactionListingScreen = '/transactionListingScreen';
   static const String trialBalanceScreen = '/trialBalanceScreen';
- // static const String invoiceQuoteBrandingScreen = '/invoiceQuoteBrandingScreen';
+  // static const String invoiceQuoteBrandingScreen = '/invoiceQuoteBrandingScreen';
   static const String quotes = '/quotes';
   static const String createQuote = '/create-quote';
   static const String reporting = '/reporting';
   static const String profitLoss = '/profit-loss';
   static const String webview = '/webview';
+  static const String dashboard = '/dashboard';
 }

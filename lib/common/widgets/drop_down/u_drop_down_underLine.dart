@@ -22,8 +22,7 @@ class UDropDown<T> extends StatelessWidget {
     this.padding,
   }) : super(key: key);
 
-  bool get _showLabel =>
-      label != null && label!.trim().isNotEmpty;
+  bool get _showLabel => label != null && label!.trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,7 @@ class UDropDown<T> extends StatelessWidget {
               style: GoogleFonts.plusJakartaSans(
                 color: UColors.textSecondary,
                 fontWeight: FontWeight.w500,
-                fontSize: 14
+                fontSize: 14,
               ),
             ),
             const SizedBox(height: 12),
@@ -52,8 +51,11 @@ class UDropDown<T> extends StatelessWidget {
             hint: hint != null ? Text(hint!) : null,
             items: items,
             onChanged: onChanged,
-
-            style: GoogleFonts.plusJakartaSans(fontSize: 14,color: UColors.textPrimary),
+            menuMaxHeight: 300, // Constrain dropdown menu height
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
+              color: UColors.textPrimary,
+            ),
             icon: Icon(Icons.keyboard_arrow_down_outlined),
             decoration: const InputDecoration(
               contentPadding: EdgeInsets.zero,

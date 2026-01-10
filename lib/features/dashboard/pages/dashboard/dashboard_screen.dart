@@ -7,15 +7,17 @@ import 'package:sole/features/dashboard/pages/tracker/tracker_screen.dart';
 import 'package:sole/features/dashboard/pages/transactions/transactions_screen.dart';
 import 'package:sole/features/dashboard/pages/assets/assets_screen.dart';
 import 'package:sole/features/dashboard/pages/invoices/invoices_screen.dart';
-import 'package:sole/features/dashboard/pages/add_expenses/add_expenses_screen.dart';
+import 'package:sole/features/dashboard/pages/expense/add_expenses/add_expenses_screen.dart';
 import 'package:sole/features/dashboard/pages/notification/notification_screen.dart';
 import 'package:sole/features/dashboard/pages/profile/profile_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
+import 'package:sole/utils/widgets/shimmer_loading.dart';
 import 'package:sole/routes/routes.dart';
 import '../../../../../utils/constants/sizes.dart';
 import 'dashboard_controller.dart';
+import '../../controllers/profile_controller.dart';
 
 class DashboardScreen extends GetView<DashboardController> {
   const DashboardScreen({super.key});
@@ -27,6 +29,11 @@ class DashboardScreen extends GetView<DashboardController> {
     return Scaffold(
       backgroundColor: dark ? UColors.black : UColors.bg,
       body: Obx(() {
+        // Show loading indicator while fetching data
+        if (controller.isLoadingDashboard.value) {
+          return UShimmer.dashboardLoading(context, dark: dark);
+        }
+
         // If first time open, show onboarding UI
         if (controller.isFirstTimeOpen.value) {
           return SingleChildScrollView(
@@ -91,11 +98,50 @@ class DashboardScreen extends GetView<DashboardController> {
                             const SizedBox(width: USizes.spaceBtwItems),
                             GestureDetector(
                               onTap: () => Get.to(() => const ProfileScreen()),
-                              child: const CircleAvatar(
-                                radius: 20,
-                                backgroundImage: NetworkImage(
-                                  "https://as2.ftcdn.net/v2/jpg/01/18/63/09/1000_F_118630957_MvuK2rw0Avyp3HwlARVQWx7M3edlC4oO.jpg",
-                                ),
+                              child: GetBuilder<ProfileController>(
+                                init: ProfileController(),
+                                builder: (profileController) {
+                                  final hasProfilePic =
+                                      profileController.profilePictureUrl !=
+                                          null &&
+                                      profileController
+                                          .profilePictureUrl!
+                                          .isNotEmpty;
+
+                                  return Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: hasProfilePic
+                                          ? Colors.transparent
+                                          : UColors.white.withOpacity(0.2),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: hasProfilePic
+                                        ? ClipOval(
+                                            child: Image.network(
+                                              profileController
+                                                  .profilePictureUrl!,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => Icon(
+                                                    Icons.person,
+                                                    color: UColors.white,
+                                                    size: 24,
+                                                  ),
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.person,
+                                            color: UColors.white,
+                                            size: 24,
+                                          ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -464,6 +510,7 @@ class DashboardScreen extends GetView<DashboardController> {
                       ),
                       child: Column(
                         children: [
+                          // First Row: Unpaid and Paid
                           Row(
                             children: [
                               Expanded(
@@ -471,7 +518,7 @@ class DashboardScreen extends GetView<DashboardController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Unpaid",
+                                      "Unpaid (Due)",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodySmall
@@ -482,7 +529,7 @@ class DashboardScreen extends GetView<DashboardController> {
                                     const SizedBox(height: 4),
                                     Obx(
                                       () => Text(
-                                        "\$${controller.unpaidAmount.value.toStringAsFixed(0)},500",
+                                        "\$${controller.unpaidAmount.value.toStringAsFixed(0)}",
                                         style: Theme.of(
                                           context,
                                         ).textTheme.headlineSmall,
@@ -507,7 +554,7 @@ class DashboardScreen extends GetView<DashboardController> {
                                     const SizedBox(height: 4),
                                     Obx(
                                       () => Text(
-                                        "\$${controller.paidAmount.value.toStringAsFixed(0)},500",
+                                        "\$${controller.paidAmount.value.toStringAsFixed(0)}",
                                         style: Theme.of(
                                           context,
                                         ).textTheme.headlineSmall,
@@ -519,6 +566,123 @@ class DashboardScreen extends GetView<DashboardController> {
                             ],
                           ),
                           const SizedBox(height: USizes.spaceBtwItems),
+
+                          // Second Row: Overdue and Draft
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Overdue",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: UColors.textSecondary,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Obx(
+                                      () => Text(
+                                        "\$${controller.overdueAmount.value.toStringAsFixed(0)}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall
+                                            ?.copyWith(
+                                              color:
+                                                  controller
+                                                          .overdueAmount
+                                                          .value >
+                                                      0
+                                                  ? UColors.error
+                                                  : null,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Draft",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: UColors.textSecondary,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Obx(
+                                      () => Text(
+                                        "\$${controller.draftAmount.value.toStringAsFixed(0)}",
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.headlineSmall,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: USizes.spaceBtwItems),
+
+                          // Reconcile Pending Info
+                          if (controller.reconcilePending.value > 0)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                              margin: const EdgeInsets.only(
+                                bottom: USizes.spaceBtwItems,
+                              ),
+                              decoration: BoxDecoration(
+                                color: UColors.warning.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: UColors.warning.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "Reconciliation Pending",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            color: UColors.warning,
+                                          ),
+                                    ),
+                                  ),
+                                  Obx(
+                                    () => Text(
+                                      "${controller.reconcilePending.value} items",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: UColors.warning,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          // Next BAS Due
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,

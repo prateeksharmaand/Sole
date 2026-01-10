@@ -79,6 +79,20 @@ class SignUpScreen extends StatelessWidget {
                       child: SvgPicture.asset(UImages.mailIcon),
                     ),
                   ),
+                  Obx(
+                    () => controller.emailError.value.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              controller.emailError.value,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
                   SizedBox(height: USizes.md),
                   Text(
                     "Password",
@@ -234,6 +248,20 @@ class SignUpScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  Obx(
+                    () => controller.confirmPasswordError.value.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              controller.confirmPasswordError.value,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
                   SizedBox(height: USizes.md),
                   Text(
                     "Join From",
@@ -247,12 +275,7 @@ class SignUpScreen extends StatelessWidget {
                   SizedBox(height: USizes.sm * 1.5),
                   UDropdownField(
                     hintText: "Select  join from",
-                    items: const [
-                      'UK',
-                      'India',
-                      'China',
-                      'Nepal',
-                    ],
+                    items: const ['UK', 'India', 'China', 'Nepal'],
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
                       child: Column(
@@ -261,8 +284,22 @@ class SignUpScreen extends StatelessWidget {
                       ),
                     ),
                     onChanged: (value) {
-                      print(value);
+                      controller.selectedJoinFrom.value = value ?? '';
                     },
+                  ),
+                  Obx(
+                    () => controller.joinFromError.value.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              controller.joinFromError.value,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                   SizedBox(height: USizes.md),
                   Text(
@@ -275,24 +312,13 @@ class SignUpScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: USizes.sm * 1.5),
-                  UDropdownField(
+                  UTextField(
+                    controller: controller.referralCodeController,
                     hintText: "Enter referral code",
-                    items: const [
-                      'Referral Code 1',
-                      'Referral Code 2',
-                      'Referral Code 3',
-                      'Referral Code 4',
-                    ],
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [SvgPicture.asset(UImages.userIcon)],
-                      ),
+                      child: SvgPicture.asset(UImages.userIcon),
                     ),
-                    onChanged: (value) {
-                      print(value);
-                    },
                   ),
                   SizedBox(height: USizes.md),
                   Text(
@@ -305,31 +331,29 @@ class SignUpScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: USizes.sm * 1.5),
-                  UDropdownField(
+                  UTextField(
+                    controller: controller.couponCodeController,
                     hintText: "Enter coupon code",
-                    items: const [
-                      'Coupon Code A',
-                      'Coupon Code B',
-                      'Coupon Code C',
-                      'Coupon Code D',
-                    ],
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [SvgPicture.asset(UImages.ticketIcon)],
-                      ),
+                      child: SvgPicture.asset(UImages.ticketIcon),
                     ),
-                    onChanged: (value) {
-                      print(value);
-                    },
                   ),
                   SizedBox(height: USizes.lg),
-                  UButton(
-                    onPressed: () {
-                      Get.offAll(() => LoginScreen());
-                    },
-                    label: "Sign Up",
+                  Obx(
+                    () => UButton(
+                      onPressed: () async {
+                        if (!controller.validateFields()) {
+                          return;
+                        }
+
+                        // Device registration is already handled by AppInitializationController
+                        // during app startup, so we can proceed directly to user registration
+                        await controller.registerUser();
+                      },
+                      isLoading: controller.isLoading.value,
+                      label: "Sign Up",
+                    ),
                   ),
                   SizedBox(height: USizes.lg),
                   Row(

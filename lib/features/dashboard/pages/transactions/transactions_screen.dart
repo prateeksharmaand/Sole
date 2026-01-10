@@ -5,6 +5,7 @@ import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
+import 'package:sole/utils/widgets/shimmer_loading.dart';
 import 'transactions_controller.dart';
 import 'transaction_detail_screen.dart';
 import 'add_transaction_screen.dart';
@@ -127,6 +128,14 @@ class TransactionsScreen extends GetView<TransactionsController> {
 
             /// 4. Transaction List
             Obx(() {
+              // Show shimmer loading when loading and no transactions yet
+              if (controller.isLoading.value &&
+                  controller.allTransactions.isEmpty) {
+                return Expanded(
+                  child: UShimmer.transactionListLoading(context, dark: dark),
+                );
+              }
+
               final isMatched = controller.selectedTab.value == "Matched";
               final transactions = isMatched
                   ? controller.matchedTransactions
@@ -220,7 +229,7 @@ class TransactionsScreen extends GetView<TransactionsController> {
               title: 'Bulk Upload',
               onTap: () {
                 Get.back();
-                // Bulk Upload Logic
+                controller.uploadBulkTransactions();
               },
             ),
             const SizedBox(height: USizes.spaceBtwSections),
@@ -446,7 +455,6 @@ class TransactionsScreen extends GetView<TransactionsController> {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: color.withAlpha(20),
-
               borderRadius: BorderRadius.circular(8),
             ),
             child: SvgPicture.asset(
@@ -467,6 +475,7 @@ class TransactionsScreen extends GetView<TransactionsController> {
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -585,21 +594,35 @@ class TransactionsScreen extends GetView<TransactionsController> {
         const SizedBox(height: 12),
         SizedBox(
           width: 200,
-          child: OutlinedButton(
-            onPressed: () {},
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: UColors.borderPrimary),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+          child: Obx(
+            () => OutlinedButton(
+              onPressed: controller.isUploading.value
+                  ? null
+                  : () => controller.uploadBulkTransactions(),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: UColors.borderPrimary),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(UImages.importIcon, height: 18, width: 18),
-                const SizedBox(width: 8),
-                const Text('Bulk Upload'),
-              ],
+              child: controller.isUploading.value
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          UImages.importIcon,
+                          height: 18,
+                          width: 18,
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('Bulk Upload'),
+                      ],
+                    ),
             ),
           ),
         ),

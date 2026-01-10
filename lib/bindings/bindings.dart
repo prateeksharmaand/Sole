@@ -11,11 +11,10 @@ import '../features/dashboard/controllers/communication_preferences_controller.d
 import '../features/dashboard/controllers/expense_controller.dart';
 import '../features/dashboard/controllers/notification_controller.dart';
 import '../features/dashboard/controllers/reports_controller.dart';
-import 'package:sole/features/dashboard/pages/dashboard/dashboard_controller.dart';
 import 'package:sole/features/dashboard/pages/transactions/transactions_controller.dart';
 import '../features/dashboard/pages/bas_reports/bas_reports_screen.dart';
 import '../features/dashboard/pages/customers_suppliers/customers_screen.dart';
-import '../features/dashboard/pages/profile_branding/profile_branding_screen.dart';
+import '../features/dashboard/controllers/profile_branding_controller.dart';
 import '../features/dashboard/pages/transaction_listing/transaction_listing_screen.dart';
 import '../features/dashboard/pages/trial_balance/trial_balance_screen.dart';
 
@@ -56,17 +55,25 @@ class UBindings extends Bindings {
       () => CustomersSuppliersController(),
       fenix: true,
     );
-    Get.lazyPut<BasReportsController>(() => BasReportsController(), fenix: true);
-    Get.lazyPut<TransactionListingController>(() => TransactionListingController(), fenix: true);
-    Get.lazyPut<ProfileAndBrandingController>(() => ProfileAndBrandingController(), fenix: true);
-    Get.lazyPut<TrialBalanceController>(() => TrialBalanceController(), fenix: true);
+    Get.lazyPut<BasReportsController>(
+      () => BasReportsController(),
+      fenix: true,
+    );
+    Get.lazyPut<TransactionListingController>(
+      () => TransactionListingController(),
+      fenix: true,
+    );
+    Get.lazyPut<ProfileAndBrandingController>(
+      () => ProfileAndBrandingController(),
+      fenix: true,
+    );
+    Get.lazyPut<TrialBalanceController>(
+      () => TrialBalanceController(),
+      fenix: true,
+    );
 
     Get.put(AuthController());
     Get.put(OnboardingController());
-    Get.put(DashboardController());
-    Get.put(AuthController());
-    Get.put(OnboardingController());
-    Get.put(DashboardController());
     Get.put(TransactionsController());
   }
 }

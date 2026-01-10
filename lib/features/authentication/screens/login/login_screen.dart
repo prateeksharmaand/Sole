@@ -7,17 +7,18 @@ import 'package:sole/common/widgets/app_btn/app_btn.dart';
 import 'package:sole/common/widgets/button/social_buttons.dart';
 import 'package:sole/common/widgets/textfields/app_text_fields.dart';
 import 'package:sole/features/authentication/screens/sign_up/sign_up_screen.dart';
-import 'package:sole/navigation_menu.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/device_helpers.dart';
+import 'login_controller.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
     return Scaffold(
       bottomSheet: Padding(
         padding: EdgeInsets.only(
@@ -100,11 +101,27 @@ class LoginScreen extends StatelessWidget {
                   ),
                   SizedBox(height: USizes.sm * 1.5),
                   UTextField(
+                    controller: controller.emailController,
                     hintText: "Enter your email",
+                    keyboardType: TextInputType.emailAddress,
                     prefixWidget: Padding(
                       padding: EdgeInsets.only(left: USizes.sm * 1.5),
                       child: SvgPicture.asset(UImages.mailIcon),
                     ),
+                  ),
+                  Obx(
+                    () => controller.emailError.value.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              controller.emailError.value,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                   SizedBox(height: USizes.md),
                   Text(
@@ -117,16 +134,39 @@ class LoginScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: USizes.sm * 1.5),
-                  UTextField(
-                    hintText: "Enter Password",
-                    prefixWidget: Padding(
-                      padding: EdgeInsets.only(left: USizes.sm * 1.5),
-                      child: SvgPicture.asset(UImages.passwordIcon),
+                  Obx(
+                    () => UTextField(
+                      controller: controller.passwordController,
+                      hintText: "Enter Password",
+                      obscureText: !controller.isPasswordVisible.value,
+                      prefixWidget: Padding(
+                        padding: EdgeInsets.only(left: USizes.sm * 1.5),
+                        child: SvgPicture.asset(UImages.passwordIcon),
+                      ),
+                      suffix: IconButton(
+                        onPressed: controller.togglePasswordVisibility,
+                        icon: Icon(
+                          controller.isPasswordVisible.value
+                              ? Icons.visibility_outlined
+                              : Icons.visibility_off_outlined,
+                          color: UColors.iconA2B3,
+                        ),
+                      ),
                     ),
-                    suffix: Icon(
-                      Icons.visibility_off_outlined,
-                      color: UColors.iconA2B3,
-                    ),
+                  ),
+                  Obx(
+                    () => controller.passwordError.value.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              controller.passwordError.value,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
                   SizedBox(height: USizes.sm),
                   Align(
@@ -141,10 +181,13 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: USizes.lg),
-                  UButton(onPressed: () {
-                    Get.offAll(
-                            ()=>NavigationMenu());
-                  }, label: "Sign in"),
+                  Obx(
+                    () => UButton(
+                      onPressed: controller.login,
+                      label: "Sign in",
+                      isLoading: controller.isLoading.value,
+                    ),
+                  ),
                   SizedBox(height: USizes.lg),
                   Row(
                     children: [
