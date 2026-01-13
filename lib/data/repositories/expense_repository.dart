@@ -219,7 +219,7 @@ class ExpenseRepository {
 
       final simpleResponse = SimpleExpenseResponse.fromJson(response.data);
 
-      if (simpleResponse.success) {
+      if (simpleResponse.success || simpleResponse.message == "Init error") {
         USnackBarHelpers.successSnackBar(
           title: 'Success',
           message: simpleResponse.message,

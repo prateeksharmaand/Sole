@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sole/common/widgets/textfields/app_text_fields.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
@@ -182,16 +183,9 @@ class ExpenseScreen extends GetView<ExpenseController> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Obx(() {
-                  // Loading state
-                  if (controller.isLoading.value &&
-                      controller.expenses.isEmpty) {
-                    return Center(
-                      child: CircularProgressIndicator(color: UColors.primary),
-                    );
-                  }
-
                   // Empty state
-                  if (controller.expenses.isEmpty) {
+                  if (controller.expenses.isEmpty &&
+                      !controller.isLoading.value) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -223,186 +217,203 @@ class ExpenseScreen extends GetView<ExpenseController> {
                     );
                   }
 
-                  // List with data
-                  return RefreshIndicator(
-                    onRefresh: controller.refreshExpenses,
-                    color: UColors.primary,
-                    child: ListView.builder(
-                      controller: controller.scrollController,
-                      itemCount:
-                          controller.expenses.length +
-                          (controller.isLoadingMore.value ? 1 : 0),
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        // Loading more indicator at bottom
-                        if (index == controller.expenses.length) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                color: UColors.primary,
+                  // List with data or skeleton loading
+                  return Skeletonizer(
+                    enabled:
+                        controller.isLoading.value &&
+                        controller.expenses.isEmpty,
+                    child: RefreshIndicator(
+                      onRefresh: controller.refreshExpenses,
+                      color: UColors.primary,
+                      child: ListView.builder(
+                        controller: controller.scrollController,
+                        itemCount:
+                            controller.expenses.length +
+                            (controller.isLoadingMore.value ? 1 : 0),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, index) {
+                          // Loading more indicator at bottom
+                          if (index == controller.expenses.length) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: UColors.primary,
+                                ),
                               ),
-                            ),
-                          );
-                        }
-
-                        final expense = controller.expenses[index];
-
-                        return GestureDetector(
-                          onTap: () {
-                            // Navigate to details screen with expense ID
-                            Get.toNamed(
-                              URoutes.detailsExpensesScreen,
-                              arguments: expense.expenseId,
                             );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: USizes.lg),
-                            child: Row(
-                              children: [
-                                // Expense icon/image
-                                expense.image != null &&
-                                        expense.image!.isNotEmpty
-                                    ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          expense.image!,
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  SvgPicture.asset(
-                                                    UImages.assetsListIcon,
-                                                  ),
+                          }
+
+                          final expense = controller.expenses[index];
+
+                          return GestureDetector(
+                            onTap: () {
+                              // Navigate to details screen with expense ID
+                              Get.toNamed(
+                                URoutes.detailsExpensesScreen,
+                                arguments: expense.expenseId,
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: USizes.lg),
+                              child: Row(
+                                children: [
+                                  // Expense icon/image
+                                  expense.image != null &&
+                                          expense.image!.isNotEmpty
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          child: Image.network(
+                                            expense.image!,
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    SvgPicture.asset(
+                                                      UImages.assetsListIcon,
+                                                    ),
+                                          ),
+                                        )
+                                      : SvgPicture.asset(
+                                          UImages.assetsListIcon,
                                         ),
-                                      )
-                                    : SvgPicture.asset(UImages.assetsListIcon),
-                                SizedBox(width: USizes.md),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  SizedBox(width: USizes.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Expense name
+                                        Text(
+                                          expense.name,
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                            color: UColors.textPrimary,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: USizes.xs),
+                                        Row(
+                                          children: [
+                                            // Client name
+                                            Text(
+                                              expense.client.name,
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 11,
+                                                    color:
+                                                        UColors.textSecondary,
+                                                  ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: USizes.sm,
+                                                  ),
+                                              child: DotContainer(
+                                                color: UColors.textSecondary
+                                                    .withValues(alpha: .3),
+                                              ),
+                                            ),
+                                            // Date
+                                            Text(
+                                              expense.date,
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 11,
+                                                    color:
+                                                        UColors.textSecondary,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                        // Classifications/Tags
+                                        if (expense.classifications.isNotEmpty)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            child: Wrap(
+                                              spacing: 4,
+                                              children: expense.classifications
+                                                  .take(3)
+                                                  .map(
+                                                    (
+                                                      classification,
+                                                    ) => Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 6,
+                                                            vertical: 2,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: UColors.primary
+                                                            .withValues(
+                                                              alpha: 0.1,
+                                                            ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              4,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        classification.name,
+                                                        style:
+                                                            GoogleFonts.plusJakartaSans(
+                                                              fontSize: 9,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: UColors
+                                                                  .primary,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: USizes.md),
+                                  // Price
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      // Expense name
                                       Text(
-                                        expense.name,
+                                        '\$${expense.price}',
                                         style: GoogleFonts.plusJakartaSans(
                                           fontWeight: FontWeight.w500,
                                           fontSize: 12,
                                           color: UColors.textPrimary,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      SizedBox(height: USizes.xs),
-                                      Row(
-                                        children: [
-                                          // Client name
-                                          Text(
-                                            expense.client.name,
-                                            style: GoogleFonts.plusJakartaSans(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 11,
-                                              color: UColors.textSecondary,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: USizes.sm,
-                                            ),
-                                            child: DotContainer(
-                                              color: UColors.textSecondary
-                                                  .withValues(alpha: .3),
-                                            ),
-                                          ),
-                                          // Date
-                                          Text(
-                                            expense.date,
-                                            style: GoogleFonts.plusJakartaSans(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 11,
-                                              color: UColors.textSecondary,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      // Classifications/Tags
-                                      if (expense.classifications.isNotEmpty)
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            top: 4,
-                                          ),
-                                          child: Wrap(
-                                            spacing: 4,
-                                            children: expense.classifications
-                                                .take(3)
-                                                .map(
-                                                  (classification) => Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 2,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: UColors.primary
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            4,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      classification.name,
-                                                      style:
-                                                          GoogleFonts.plusJakartaSans(
-                                                            fontSize: 9,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                UColors.primary,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                )
-                                                .toList(),
+                                      if (expense.gst == 1)
+                                        Text(
+                                          'incl. GST',
+                                          style: GoogleFonts.plusJakartaSans(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 9,
+                                            color: UColors.textSecondary,
                                           ),
                                         ),
                                     ],
                                   ),
-                                ),
-                                SizedBox(width: USizes.md),
-                                // Price
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      '\$${expense.price}',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                        color: UColors.textPrimary,
-                                      ),
-                                    ),
-                                    if (expense.gst == 1)
-                                      Text(
-                                        'incl. GST',
-                                        style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 9,
-                                          color: UColors.textSecondary,
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   );
                 }),
@@ -602,8 +613,6 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
             ),
           ),
 
-
-
           const SizedBox(height: 20),
 
           /// CLIENT
@@ -656,7 +665,7 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
           const Text("Category"),
           const SizedBox(height: 8),
           Obx(
-                () => DropdownButtonFormField<String>(
+            () => DropdownButtonFormField<String>(
               value: controller.selectedCategory.value.isEmpty
                   ? null
                   : controller.selectedCategory.value,
@@ -675,7 +684,6 @@ class ExpenseFilterBottomSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-
 
           /// PAID BY CASH
           Obx(

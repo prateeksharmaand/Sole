@@ -3,9 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
+import '../../../../../data/models/client_model.dart';
 
 class BusinessInformationCard extends StatelessWidget {
-  const BusinessInformationCard({super.key});
+  final ClientDetails client;
+
+  const BusinessInformationCard({super.key, required this.client});
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +65,16 @@ class BusinessInformationCard extends StatelessWidget {
               Expanded(
                 child: _infoBox(
                   label: "Business Name",
-                  value: "Test .Inc",
+                  value: client.businessName.isNotEmpty
+                      ? client.businessName
+                      : client.name,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _infoBox(
-                  label: "Industry",
-                  value: "Finance",
+                  label: "Email",
+                  value: client.email.isNotEmpty ? client.email : "N/A",
                 ),
               ),
             ],
@@ -83,7 +88,7 @@ class BusinessInformationCard extends StatelessWidget {
               Expanded(
                 child: _infoBox(
                   label: "ABN Number",
-                  value: "12345678",
+                  value: client.abn.isNotEmpty ? client.abn : "N/A",
                 ),
               ),
             ],
@@ -94,10 +99,7 @@ class BusinessInformationCard extends StatelessWidget {
   }
 
   /// ---------------- Info Box ----------------
-  Widget _infoBox({
-    required String label,
-    required String value,
-  }) {
+  Widget _infoBox({required String label, required String value}) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/constants/sizes.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
-import 'package:sole/utils/widgets/shimmer_loading.dart';
 import 'transactions_controller.dart';
 import 'transaction_detail_screen.dart';
 import 'add_transaction_screen.dart';
@@ -128,41 +128,38 @@ class TransactionsScreen extends GetView<TransactionsController> {
 
             /// 4. Transaction List
             Obx(() {
-              // Show shimmer loading when loading and no transactions yet
-              if (controller.isLoading.value &&
-                  controller.allTransactions.isEmpty) {
-                return Expanded(
-                  child: UShimmer.transactionListLoading(context, dark: dark),
-                );
-              }
-
               final isMatched = controller.selectedTab.value == "Matched";
               final transactions = isMatched
                   ? controller.matchedTransactions
                   : controller.unmatchedTransactions;
 
-              if (transactions.isEmpty) {
+              if (transactions.isEmpty && !controller.isLoading.value) {
                 return _buildEmptyState(context, isMatched);
               }
 
-              return Container(
-                padding: const EdgeInsets.all(USizes.md),
-                decoration: BoxDecoration(
-                  color: dark ? UColors.dark : UColors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: transactions.length,
-                  separatorBuilder: (_, __) => const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: Divider(height: 1, color: UColors.bg),
+              return Skeletonizer(
+                enabled:
+                    controller.isLoading.value &&
+                    controller.allTransactions.isEmpty,
+                child: Container(
+                  padding: const EdgeInsets.all(USizes.md),
+                  decoration: BoxDecoration(
+                    color: dark ? UColors.dark : UColors.white,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  itemBuilder: (context, index) {
-                    final t = transactions[index];
-                    return _buildTransactionRow(context, t, dark, isMatched);
-                  },
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: transactions.length,
+                    separatorBuilder: (_, __) => const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Divider(height: 1, color: UColors.bg),
+                    ),
+                    itemBuilder: (context, index) {
+                      final t = transactions[index];
+                      return _buildTransactionRow(context, t, dark, isMatched);
+                    },
+                  ),
                 ),
               );
             }),

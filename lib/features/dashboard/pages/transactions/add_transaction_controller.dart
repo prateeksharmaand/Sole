@@ -138,8 +138,7 @@ class AddTransactionController extends GetxController {
           colorText: Get.theme.colorScheme.onPrimary,
         );
 
-        // Navigate back
-        Get.back();
+        Navigator.pop(Get.context!);
 
         // Refresh transactions list
         try {

@@ -106,6 +106,22 @@ class ProfileAndBrandingController extends GetxController {
   Future<void> saveBranding() async {
     if (isSaving.value) return;
 
+    // Validation: Check if there's any meaningful data to save
+    bool hasChanges =
+        selectedLogo.value != null ||
+        invoiceNoteController.text.isNotEmpty ||
+        quoteNoteController.text.isNotEmpty;
+
+    if (!hasChanges) {
+      Get.snackbar(
+        'No Changes',
+        'Please make some changes before saving',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: Duration(seconds: 2),
+      );
+      return;
+    }
+
     isSaving.value = true;
 
     try {
@@ -133,7 +149,7 @@ class ProfileAndBrandingController extends GetxController {
         websiteEnabled: _boolToString(websiteEnabled.value),
         facebookUrlEnabled: _boolToString(facebookUrlEnabled.value),
         instagramUrlEnabled: _boolToString(instagramUrlEnabled.value),
-        linkedinUrlEnabled: _boolToString(linkedinUrlEnabled.value),
+        linkedinUrlEnabled: _boolToString(tiktokUrlEnabled.value),
         tiktokUrlEnabled: _boolToString(tiktokUrlEnabled.value),
         invoiceTemplate: invoiceTemplate.value,
         quoteTemplate: quoteTemplate.value,

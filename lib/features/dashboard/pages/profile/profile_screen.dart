@@ -133,22 +133,57 @@ class ProfileScreen extends GetView<ProfileController> {
                   ),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 260,
-                        child: ListView.builder(
-                          itemCount: 2,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: SizedBox(
-                                width: 330, // ✅ MUST HAVE WIDTH
-                                child: BusinessInformationCard(),
+                      Obx(() {
+                        // Loading state
+                        if (controller.isLoadingClients.value &&
+                            controller.clients.isEmpty) {
+                          return SizedBox(
+                            height: 260,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: UColors.primary,
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                            ),
+                          );
+                        }
+
+                        // Empty state
+                        if (controller.clients.isEmpty) {
+                          return SizedBox(
+                            height: 260,
+                            child: Center(
+                              child: Text(
+                                'No clients found',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 14,
+                                  color: UColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        // Client list
+                        return SizedBox(
+                          height: 260,
+                          child: ListView.builder(
+                            itemCount: controller.clients.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              final client = controller.clients[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: SizedBox(
+                                  width: 330,
+                                  child: BusinessInformationCard(
+                                    client: client,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
                       Container(
                         margin: EdgeInsets.symmetric(
                           vertical: USizes.defaultSpace20,

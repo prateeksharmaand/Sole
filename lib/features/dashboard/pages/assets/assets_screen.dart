@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sole/features/dashboard/pages/taxes_bankings/taxes_banking_screen.dart';
 import 'package:sole/routes/app_routes.dart';
 import 'package:sole/routes/routes.dart';
@@ -10,7 +11,6 @@ import '../../../../common/widgets/textfields/app_text_fields.dart';
 import '../../../../utils/constants/colors.dart';
 import '../../../../utils/constants/images.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../../../utils/widgets/shimmer_loading.dart';
 import '../../controllers/assets_controller.dart';
 
 class AssetsScreen extends GetView<AssetsController> {
@@ -59,12 +59,8 @@ class AssetsScreen extends GetView<AssetsController> {
             SizedBox(height: USizes.lg),
             Expanded(
               child: Obx(() {
-                if (controller.isLoadingAssets.value &&
-                    controller.assetsList.isEmpty) {
-                  return UShimmer.assetsListLoading(context, dark: false);
-                }
-
-                if (controller.assetsList.isEmpty) {
+                if (controller.assetsList.isEmpty &&
+                    !controller.isLoadingAssets.value) {
                   return Container(
                     padding: EdgeInsets.all(USizes.md),
                     decoration: BoxDecoration(
@@ -83,76 +79,82 @@ class AssetsScreen extends GetView<AssetsController> {
                   );
                 }
 
-                return Container(
-                  padding: EdgeInsets.all(USizes.md),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: RefreshIndicator(
-                    onRefresh: controller.refreshAssets,
-                    child: ListView.builder(
-                      itemCount: controller.assetsList.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final asset = controller.assetsList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: USizes.lg),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset(UImages.expensesIcon),
-                              SizedBox(width: USizes.md),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      asset.name,
-                                      style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                        color: UColors.textPrimary,
+                return Skeletonizer(
+                  enabled:
+                      controller.isLoadingAssets.value &&
+                      controller.assetsList.isEmpty,
+                  child: Container(
+                    padding: EdgeInsets.all(USizes.md),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: RefreshIndicator(
+                      onRefresh: controller.refreshAssets,
+                      child: ListView.builder(
+                        itemCount: controller.assetsList.length,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final asset = controller.assetsList[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: USizes.lg),
+                            child: Row(
+                              children: [
+                                SvgPicture.asset(UImages.expensesIcon),
+                                SizedBox(width: USizes.md),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        asset.name,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: UColors.textPrimary,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(height: USizes.xs),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "\$${asset.price}",
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 11,
-                                            color: UColors.textSecondary,
+                                      SizedBox(height: USizes.xs),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "\$${asset.price}",
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 11,
+                                              color: UColors.textSecondary,
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: USizes.sm,
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: USizes.sm,
+                                            ),
+                                            child: DotContainer(
+                                              color: UColors.textSecondary
+                                                  .withValues(alpha: .3),
+                                            ),
                                           ),
-                                          child: DotContainer(
-                                            color: UColors.textSecondary
-                                                .withValues(alpha: .3),
+                                          Text(
+                                            asset.dateOfPurchase,
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 11,
+                                              color: UColors.textSecondary,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          asset.dateOfPurchase,
-                                          style: GoogleFonts.plusJakartaSans(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 11,
-                                            color: UColors.textSecondary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 );

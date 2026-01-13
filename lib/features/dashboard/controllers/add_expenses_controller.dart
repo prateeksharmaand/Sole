@@ -71,6 +71,8 @@ class AddExpensesController extends GetxController {
 
   // Image handling
   Rx<File?> selectedImage = Rx<File?>(null);
+  RxString existingImageUrl =
+      ''.obs; // For edit mode - stores the expense's existing image URL
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -152,6 +154,12 @@ class AddExpensesController extends GetxController {
     // Set classifications
     selectedClassifications.value = expense.classifications;
 
+    // Set existing image URL if available
+    if (expense.image != null && expense.image!.isNotEmpty) {
+      existingImageUrl.value = expense.image!;
+      print('✏️ Edit mode: Loaded existing image URL: ${expense.image}');
+    }
+
     print('✏️ Edit mode: Loading expense ${expense.name}');
   }
 
@@ -174,6 +182,7 @@ class AddExpensesController extends GetxController {
   /// Clear selected image
   void clearImage() {
     selectedImage.value = null;
+    existingImageUrl.value = ''; // Also  clear existing image URL
   }
 
   /// Select date
@@ -308,18 +317,33 @@ class AddExpensesController extends GetxController {
           paidWithCash: isPaidWithCash.value ? 1 : 0,
           imagePath: selectedImage.value?.path,
         );
+      } else {
+        // Create new expense
+        response = await _expenseRepository.createExpense(
+          clientId: selectedClientId.value!,
+          name: nameController.text.trim(),
+          description: descriptionController.text.trim(),
+          date: apiFormattedDate,
+          price: num.parse(priceController.text.trim()),
+          gst: isGstIncluded.value ? 1 : 0,
+          isAsset: isAsset.value ? 'yes' : 'no',
+          classificationIds: existingClassificationIds.isNotEmpty
+              ? existingClassificationIds
+              : null,
+          classificationNames: newClassificationNames.isNotEmpty
+              ? newClassificationNames
+              : null,
+          paidWithCash: isPaidWithCash.value ? 1 : 0,
+          imagePath: selectedImage.value?.path,
+        );
       }
 
-      if (response.success) {
-        // Refresh the expense list in ExpenseController
+      if (response.success || response.message == "Init error") {
         final expenseController = Get.find<ExpenseController>();
         await expenseController.refreshExpenses();
-
-        // Clear form
+        Navigator.pop(Get.context!);
+        Navigator.pop(Get.context!);
         clearForm();
-
-        // Navigate back
-        Get.back();
       }
     } catch (e) {
       print('⚠️ Error creating expense: $e');
@@ -340,6 +364,9 @@ class AddExpensesController extends GetxController {
     selectedReport.value = null;
     selectedCategory.value = null;
     selectedClassifications.clear();
+    existingImageUrl.value = '';
+    isEditMode.value = false; // Reset edit mode
+    editingExpenseId.value = null; // Reset editing ID
     clearImage();
   }
 }

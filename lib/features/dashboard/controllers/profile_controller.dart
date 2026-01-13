@@ -1,24 +1,32 @@
 import 'package:get/get.dart';
 import '../../../data/repositories/profile_repository.dart';
 import '../../../data/repositories/auth_repository.dart';
+import '../../../data/repositories/client_repository.dart';
 import '../../../data/services/auth_storage_service.dart';
 import '../../../data/models/user_model.dart';
+import '../../../data/models/client_model.dart';
 
 class ProfileController extends GetxController {
   final ProfileRepository _profileRepository = ProfileRepository();
   final AuthRepository _authRepository = AuthRepository();
   final AuthStorageService _authStorageService = AuthStorageService();
+  final ClientRepository _clientRepository = ClientRepository();
 
   // User profile data
   final Rx<UserModel?> userProfile = Rx<UserModel?>(null);
 
-  // Loading state
+  // Client list data
+  final RxList<ClientDetails> clients = <ClientDetails>[].obs;
+
+  // Loading states
   final RxBool isLoading = false.obs;
+  final RxBool isLoadingClients = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadUserProfile();
+    loadClients(); // Load clients on init
   }
 
   /// Load user profile from API
@@ -46,6 +54,31 @@ class ProfileController extends GetxController {
   /// Refresh profile data
   Future<void> refreshProfile() async {
     await loadUserProfile();
+  }
+
+  /// Load clients from API
+  Future<void> loadClients() async {
+    if (isLoadingClients.value) return;
+
+    isLoadingClients.value = true;
+
+    try {
+      final response = await _clientRepository.getClients(
+        pageSize: 10, // Load first 10 clients
+        type: 'client',
+      );
+
+      if (response.success && response.data != null) {
+        clients.value = response.data!;
+        print('✅ Loaded ${clients.length} clients for profile');
+      } else {
+        print('❌ Failed to load clients: ${response.message}');
+      }
+    } catch (e) {
+      print('⚠️ Error loading clients: $e');
+    } finally {
+      isLoadingClients.value = false;
+    }
   }
 
   /// Get display name (fallback to email if name is empty)

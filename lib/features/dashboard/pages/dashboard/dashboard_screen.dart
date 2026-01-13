@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sole/features/dashboard/pages/client_refunds/client_refunds_screen.dart';
 import 'package:sole/features/dashboard/pages/contact/contact_screen.dart';
 import 'package:sole/features/dashboard/pages/tracker/tracker_screen.dart';
@@ -13,7 +14,6 @@ import 'package:sole/features/dashboard/pages/profile/profile_screen.dart';
 import 'package:sole/utils/constants/colors.dart';
 import 'package:sole/utils/constants/images.dart';
 import 'package:sole/utils/helpers/helper_functions.dart';
-import 'package:sole/utils/widgets/shimmer_loading.dart';
 import 'package:sole/routes/routes.dart';
 import '../../../../../utils/constants/sizes.dart';
 import 'dashboard_controller.dart';
@@ -29,11 +29,6 @@ class DashboardScreen extends GetView<DashboardController> {
     return Scaffold(
       backgroundColor: dark ? UColors.black : UColors.bg,
       body: Obx(() {
-        // Show loading indicator while fetching data
-        if (controller.isLoadingDashboard.value) {
-          return UShimmer.dashboardLoading(context, dark: dark);
-        }
-
         // If first time open, show onboarding UI
         if (controller.isFirstTimeOpen.value) {
           return SingleChildScrollView(
@@ -41,828 +36,845 @@ class DashboardScreen extends GetView<DashboardController> {
           );
         }
 
-        // Otherwise show main dashboard
-        return SingleChildScrollView(
-          child: Stack(
-            children: [
-              /// 1. Blue Header Background
-              Container(
-                height: 280,
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: USizes.defaultSpace,
-                  vertical: USizes.appBarHeight,
-                ),
-                decoration: const BoxDecoration(color: UColors.primary),
-                child: Column(
-                  children: [
-                    /// App Bar Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Logo / Title
-                        SvgPicture.asset(
-                          UImages.logoMedium,
-                          height: 50,
-                          width: 50,
-                          colorFilter: ColorFilter.mode(
-                            UColors.white,
-                            BlendMode.srcIn,
+        // Otherwise show main dashboard with skeleton loading
+        return Skeletonizer(
+          enabled: controller.isLoadingDashboard.value,
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                /// 1. Blue Header Background
+                Container(
+                  height: 280,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: USizes.defaultSpace,
+                    vertical: USizes.appBarHeight,
+                  ),
+                  decoration: const BoxDecoration(color: UColors.primary),
+                  child: Column(
+                    children: [
+                      /// App Bar Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          // Logo / Title
+                          SvgPicture.asset(
+                            UImages.logoMedium,
+                            height: 50,
+                            width: 50,
+                            colorFilter: ColorFilter.mode(
+                              UColors.white,
+                              BlendMode.srcIn,
+                            ),
                           ),
-                        ),
-                        // Notification & Profile
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  Get.to(() => const NotificationScreen()),
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  color: UColors.white.withValues(alpha: 0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: SvgPicture.asset(
-                                  UImages.notificationIcon,
-                                  height: 18,
-                                  width: 18,
-                                  colorFilter: ColorFilter.mode(
-                                    UColors.white,
-                                    BlendMode.srcIn,
+                          // Notification & Profile
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () =>
+                                    Get.to(() => const NotificationScreen()),
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    color: UColors.white.withValues(alpha: 0.2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: SvgPicture.asset(
+                                    UImages.notificationIcon,
+                                    height: 18,
+                                    width: 18,
+                                    colorFilter: ColorFilter.mode(
+                                      UColors.white,
+                                      BlendMode.srcIn,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: USizes.spaceBtwItems),
-                            GestureDetector(
-                              onTap: () => Get.to(() => const ProfileScreen()),
-                              child: GetBuilder<ProfileController>(
-                                init: ProfileController(),
-                                builder: (profileController) {
-                                  final hasProfilePic =
-                                      profileController.profilePictureUrl !=
-                                          null &&
-                                      profileController
-                                          .profilePictureUrl!
-                                          .isNotEmpty;
+                              const SizedBox(width: USizes.spaceBtwItems),
+                              GestureDetector(
+                                onTap: () =>
+                                    Get.to(() => const ProfileScreen()),
+                                child: GetBuilder<ProfileController>(
+                                  init: ProfileController(),
+                                  builder: (profileController) {
+                                    final hasProfilePic =
+                                        profileController.profilePictureUrl !=
+                                            null &&
+                                        profileController
+                                            .profilePictureUrl!
+                                            .isNotEmpty;
 
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      color: hasProfilePic
-                                          ? Colors.transparent
-                                          : UColors.white.withOpacity(0.2),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: hasProfilePic
-                                        ? ClipOval(
-                                            child: Image.network(
-                                              profileController
-                                                  .profilePictureUrl!,
-                                              fit: BoxFit.cover,
-                                              errorBuilder:
-                                                  (
-                                                    context,
-                                                    error,
-                                                    stackTrace,
-                                                  ) => Icon(
-                                                    Icons.person,
-                                                    color: UColors.white,
-                                                    size: 24,
-                                                  ),
+                                    return Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        color: hasProfilePic
+                                            ? Colors.transparent
+                                            : UColors.white.withOpacity(0.2),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: hasProfilePic
+                                          ? ClipOval(
+                                              child: Image.network(
+                                                profileController
+                                                    .profilePictureUrl!,
+                                                fit: BoxFit.cover,
+                                                errorBuilder:
+                                                    (
+                                                      context,
+                                                      error,
+                                                      stackTrace,
+                                                    ) => Icon(
+                                                      Icons.person,
+                                                      color: UColors.white,
+                                                      size: 24,
+                                                    ),
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.person,
+                                              color: UColors.white,
+                                              size: 24,
                                             ),
-                                          )
-                                        : Icon(
-                                            Icons.person,
-                                            color: UColors.white,
-                                            size: 24,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// 2. Overlapping Cards Content
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 110.0,
+                    left: USizes.defaultSpace,
+                    right: USizes.defaultSpace,
+                  ),
+                  child: Column(
+                    children: [
+                      /// --- Header Balance & Quick Actions ---
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          color: dark ? UColors.dark : UColors.white,
+                          borderRadius: BorderRadius.circular(
+                            USizes.cardRadiusLg,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: UColors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /// Balance Header & Dropdown
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Current Balance",
+                                  style: TextStyle(
+                                    color: UColors.textSecondary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: UColors.borderPrimary,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Obx(
+                                    () => DropdownButton<String>(
+                                      value: controller.selectedTimeRange.value,
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down,
+                                        size: 18,
+                                      ),
+                                      underline: const SizedBox(),
+                                      isDense: true,
+                                      style: TextStyle(
+                                        color: UColors.textSecondary,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                      items: ['MTD', 'YTD', 'ALL'].map((
+                                        String value,
+                                      ) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(
+                                              color: UColors.textSecondary,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                            ),
                                           ),
-                                  );
+                                        );
+                                      }).toList(),
+                                      onChanged: controller.changeTimeRange,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: USizes.sm),
+
+                            /// Balance Amount
+                            Obx(
+                              () => Text(
+                                "\$${controller.currentBalance.value.toStringAsFixed(0)}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 28,
+                                    ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            /// Action Grid (3x2)
+                            GridView.count(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              crossAxisCount: 3,
+                              mainAxisSpacing: USizes.spaceBtwItems,
+                              crossAxisSpacing: USizes.spaceBtwItems,
+                              childAspectRatio: 1.0,
+                              padding: EdgeInsets.zero,
+                              children: [
+                                _buildActionItem(
+                                  context,
+                                  icon: UImages.clockIcon,
+                                  label: 'Tracker',
+                                  onTap: () =>
+                                      Get.to(() => const TrackerScreen()),
+                                ),
+                                _buildActionItem(
+                                  context,
+                                  icon: UImages.bankIcon,
+                                  label: 'Transactions',
+                                  onTap: () =>
+                                      Get.to(() => const TransactionsScreen()),
+                                ),
+                                _buildActionItem(
+                                  context,
+                                  icon: UImages.folderOpenIcon,
+                                  label: 'Assets',
+                                  onTap: () =>
+                                      Get.to(() => const AssetsScreen()),
+                                ),
+                                _buildActionItem(
+                                  context,
+                                  icon: UImages.documentIcon2,
+                                  label: 'Quotes',
+                                  onTap: () => Get.toNamed(URoutes.quotes),
+                                ),
+                                _buildActionItem(
+                                  context,
+                                  icon: UImages.dollarIcon,
+                                  label: 'Client Refunds',
+                                  onTap: () =>
+                                      Get.to(() => const ClientRefundsScreen()),
+                                ),
+                                _buildActionItem(
+                                  context,
+                                  icon: UImages.profileCircleIcon,
+                                  label: 'Contact',
+                                  onTap: () =>
+                                      Get.to(() => const ContactScreen()),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: USizes.spaceBtwSections),
+
+                      /// --- Financial Stats ---
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          color: dark ? UColors.dark : UColors.white,
+                          borderRadius: BorderRadius.circular(
+                            USizes.cardRadiusLg,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: UColors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                _buildStatItem(
+                                  context,
+                                  "Total Revenue",
+                                  controller.totalRevenue.value,
+                                ),
+                                _buildStatItem(
+                                  context,
+                                  "Net Profit",
+                                  controller.netProfit.value,
+                                ),
+                                _buildStatItem(
+                                  context,
+                                  "Profit Margin %",
+                                  controller.profitMargin.value,
+                                  isCurrency: false,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: USizes.spaceBtwItems),
+                            Row(
+                              children: [
+                                _buildStatItem(
+                                  context,
+                                  "Total Expense",
+                                  controller.totalExpense.value,
+                                ),
+                                _buildStatItem(
+                                  context,
+                                  "Forecast",
+                                  controller.forecast.value,
+                                ),
+                                _buildStatItem(
+                                  context,
+                                  "Total Tax",
+                                  controller.totalTax.value,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: USizes.spaceBtwSections),
+
+                      /// --- Transactions Section ---
+                      // Use same container style
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          color: dark ? UColors.dark : UColors.white,
+                          borderRadius: BorderRadius.circular(
+                            USizes.cardRadiusLg,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: UColors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            // Toggle
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: UColors.bg,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Obx(
+                                () => Row(
+                                  children: [
+                                    _buildToggleTab(
+                                      context,
+                                      "Income",
+                                      controller.selectedTransactionTab.value ==
+                                          "Income",
+                                    ),
+                                    _buildToggleTab(
+                                      context,
+                                      "Expenses",
+                                      controller.selectedTransactionTab.value ==
+                                          "Expenses",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: USizes.spaceBtwItems),
+
+                            // List
+                            Obx(() {
+                              final isIncome =
+                                  controller.selectedTransactionTab.value ==
+                                  "Income";
+                              final transactions = isIncome
+                                  ? controller.incomeTransactions
+                                  : controller.expenseTransactions;
+
+                              return ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: transactions.length,
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(height: 16),
+                                itemBuilder: (context, index) {
+                                  final t = transactions[index];
+                                  return _buildTransactionItem(context, t);
                                 },
+                              );
+                            }),
+
+                            const SizedBox(height: USizes.spaceBtwItems),
+
+                            // Show More Button
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                onPressed: () =>
+                                    Get.to(() => const TransactionsScreen()),
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                    color: UColors.borderPrimary,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Show More",
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      size: 12,
+                                      color: UColors.textSecondary,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              /// 2. Overlapping Cards Content
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 110.0,
-                  left: USizes.defaultSpace,
-                  right: USizes.defaultSpace,
-                ),
-                child: Column(
-                  children: [
-                    /// --- Header Balance & Quick Actions ---
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(USizes.md),
-                      decoration: BoxDecoration(
-                        color: dark ? UColors.dark : UColors.white,
-                        borderRadius: BorderRadius.circular(
-                          USizes.cardRadiusLg,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: UColors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// Balance Header & Dropdown
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Current Balance",
-                                style: TextStyle(
-                                  color: UColors.textSecondary,
-                                  fontWeight: FontWeight.w500,
+
+                      const SizedBox(height: USizes.spaceBtwSections),
+
+                      /// --- Invoice Stats (Unpaid/Paid) ---
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          color: dark ? UColors.dark : UColors.white,
+                          borderRadius: BorderRadius.circular(
+                            USizes.cardRadiusLg,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: UColors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            // First Row: Unpaid and Paid
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Unpaid (Due)",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: UColors.textSecondary,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Obx(
+                                        () => Text(
+                                          "\$${controller.unpaidAmount.value.toStringAsFixed(0)}",
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.headlineSmall,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Paid",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: UColors.textSecondary,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Obx(
+                                        () => Text(
+                                          "\$${controller.paidAmount.value.toStringAsFixed(0)}",
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.headlineSmall,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: USizes.spaceBtwItems),
+
+                            // Second Row: Overdue and Draft
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Overdue",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: UColors.textSecondary,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Obx(
+                                        () => Text(
+                                          "\$${controller.overdueAmount.value.toStringAsFixed(0)}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall
+                                              ?.copyWith(
+                                                color:
+                                                    controller
+                                                            .overdueAmount
+                                                            .value >
+                                                        0
+                                                    ? UColors.error
+                                                    : null,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Draft",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: UColors.textSecondary,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Obx(
+                                        () => Text(
+                                          "\$${controller.draftAmount.value.toStringAsFixed(0)}",
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.headlineSmall,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: USizes.spaceBtwItems),
+
+                            // Reconcile Pending Info
+                            if (controller.reconcilePending.value > 0)
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: UColors.borderPrimary,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Obx(
-                                  () => DropdownButton<String>(
-                                    value: controller.selectedTimeRange.value,
-                                    icon: const Icon(
-                                      Icons.keyboard_arrow_down,
-                                      size: 18,
-                                    ),
-                                    underline: const SizedBox(),
-                                    isDense: true,
-                                    style: TextStyle(
-                                      color: UColors.textSecondary,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                    ),
-                                    items: ['MTD', 'YTD', 'ALL'].map((
-                                      String value,
-                                    ) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          style: TextStyle(
-                                            color: UColors.textSecondary,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    onChanged: controller.changeTimeRange,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: USizes.sm),
-
-                          /// Balance Amount
-                          Obx(
-                            () => Text(
-                              "\$${controller.currentBalance.value.toStringAsFixed(0)}",
-                              style: Theme.of(context).textTheme.headlineMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 28,
-                                  ),
-                            ),
-                          ),
-                          SizedBox(height: 20),
-
-                          /// Action Grid (3x2)
-                          GridView.count(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 3,
-                            mainAxisSpacing: USizes.spaceBtwItems,
-                            crossAxisSpacing: USizes.spaceBtwItems,
-                            childAspectRatio: 1.0,
-                            padding: EdgeInsets.zero,
-                            children: [
-                              _buildActionItem(
-                                context,
-                                icon: UImages.clockIcon,
-                                label: 'Tracker',
-                                onTap: () =>
-                                    Get.to(() => const TrackerScreen()),
-                              ),
-                              _buildActionItem(
-                                context,
-                                icon: UImages.bankIcon,
-                                label: 'Transactions',
-                                onTap: () =>
-                                    Get.to(() => const TransactionsScreen()),
-                              ),
-                              _buildActionItem(
-                                context,
-                                icon: UImages.folderOpenIcon,
-                                label: 'Assets',
-                                onTap: () => Get.to(() => const AssetsScreen()),
-                              ),
-                              _buildActionItem(
-                                context,
-                                icon: UImages.documentIcon2,
-                                label: 'Quotes',
-                                onTap: () => Get.toNamed(URoutes.quotes),
-                              ),
-                              _buildActionItem(
-                                context,
-                                icon: UImages.dollarIcon,
-                                label: 'Client Refunds',
-                                onTap: () =>
-                                    Get.to(() => const ClientRefundsScreen()),
-                              ),
-                              _buildActionItem(
-                                context,
-                                icon: UImages.profileCircleIcon,
-                                label: 'Contact',
-                                onTap: () =>
-                                    Get.to(() => const ContactScreen()),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: USizes.spaceBtwSections),
-
-                    /// --- Financial Stats ---
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(USizes.md),
-                      decoration: BoxDecoration(
-                        color: dark ? UColors.dark : UColors.white,
-                        borderRadius: BorderRadius.circular(
-                          USizes.cardRadiusLg,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: UColors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              _buildStatItem(
-                                context,
-                                "Total Revenue",
-                                controller.totalRevenue.value,
-                              ),
-                              _buildStatItem(
-                                context,
-                                "Net Profit",
-                                controller.netProfit.value,
-                              ),
-                              _buildStatItem(
-                                context,
-                                "Profit Margin %",
-                                controller.profitMargin.value,
-                                isCurrency: false,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: USizes.spaceBtwItems),
-                          Row(
-                            children: [
-                              _buildStatItem(
-                                context,
-                                "Total Expense",
-                                controller.totalExpense.value,
-                              ),
-                              _buildStatItem(
-                                context,
-                                "Forecast",
-                                controller.forecast.value,
-                              ),
-                              _buildStatItem(
-                                context,
-                                "Total Tax",
-                                controller.totalTax.value,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: USizes.spaceBtwSections),
-
-                    /// --- Transactions Section ---
-                    // Use same container style
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(USizes.md),
-                      decoration: BoxDecoration(
-                        color: dark ? UColors.dark : UColors.white,
-                        borderRadius: BorderRadius.circular(
-                          USizes.cardRadiusLg,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: UColors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Toggle
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: UColors.bg,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Obx(
-                              () => Row(
-                                children: [
-                                  _buildToggleTab(
-                                    context,
-                                    "Income",
-                                    controller.selectedTransactionTab.value ==
-                                        "Income",
-                                  ),
-                                  _buildToggleTab(
-                                    context,
-                                    "Expenses",
-                                    controller.selectedTransactionTab.value ==
-                                        "Expenses",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: USizes.spaceBtwItems),
-
-                          // List
-                          Obx(() {
-                            final isIncome =
-                                controller.selectedTransactionTab.value ==
-                                "Income";
-                            final transactions = isIncome
-                                ? controller.incomeTransactions
-                                : controller.expenseTransactions;
-
-                            return ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: transactions.length,
-                              separatorBuilder: (_, __) =>
-                                  const SizedBox(height: 16),
-                              itemBuilder: (context, index) {
-                                final t = transactions[index];
-                                return _buildTransactionItem(context, t);
-                              },
-                            );
-                          }),
-
-                          const SizedBox(height: USizes.spaceBtwItems),
-
-                          // Show More Button
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: () =>
-                                  Get.to(() => const TransactionsScreen()),
-                              style: OutlinedButton.styleFrom(
-                                side: const BorderSide(
-                                  color: UColors.borderPrimary,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                padding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Show More",
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 12,
-                                    color: UColors.textSecondary,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: USizes.spaceBtwSections),
-
-                    /// --- Invoice Stats (Unpaid/Paid) ---
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(USizes.md),
-                      decoration: BoxDecoration(
-                        color: dark ? UColors.dark : UColors.white,
-                        borderRadius: BorderRadius.circular(
-                          USizes.cardRadiusLg,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: UColors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // First Row: Unpaid and Paid
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Unpaid (Due)",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: UColors.textSecondary,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Obx(
-                                      () => Text(
-                                        "\$${controller.unpaidAmount.value.toStringAsFixed(0)}",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.headlineSmall,
-                                      ),
-                                    ),
-                                  ],
+                                margin: const EdgeInsets.only(
+                                  bottom: USizes.spaceBtwItems,
                                 ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Paid",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: UColors.textSecondary,
-                                          ),
+                                decoration: BoxDecoration(
+                                  color: UColors.warning.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: UColors.warning.withValues(
+                                      alpha: 0.3,
                                     ),
-                                    const SizedBox(height: 4),
-                                    Obx(
-                                      () => Text(
-                                        "\$${controller.paidAmount.value.toStringAsFixed(0)}",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.headlineSmall,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: USizes.spaceBtwItems),
-
-                          // Second Row: Overdue and Draft
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "Overdue",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: UColors.textSecondary,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Obx(
-                                      () => Text(
-                                        "\$${controller.overdueAmount.value.toStringAsFixed(0)}",
+                                    Expanded(
+                                      child: Text(
+                                        "Reconciliation Pending",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headlineSmall
+                                            .bodyMedium
                                             ?.copyWith(
-                                              color:
-                                                  controller
-                                                          .overdueAmount
-                                                          .value >
-                                                      0
-                                                  ? UColors.error
-                                                  : null,
+                                              fontWeight: FontWeight.w500,
+                                              color: UColors.warning,
+                                            ),
+                                      ),
+                                    ),
+                                    Obx(
+                                      () => Text(
+                                        "${controller.reconcilePending.value} items",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              color: UColors.warning,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Draft",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: UColors.textSecondary,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Obx(
-                                      () => Text(
-                                        "\$${controller.draftAmount.value.toStringAsFixed(0)}",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.headlineSmall,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: USizes.spaceBtwItems),
 
-                          // Reconcile Pending Info
-                          if (controller.reconcilePending.value > 0)
+                            // Next BAS Due
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
                                 vertical: 12,
                               ),
-                              margin: const EdgeInsets.only(
-                                bottom: USizes.spaceBtwItems,
-                              ),
                               decoration: BoxDecoration(
-                                color: UColors.warning.withValues(alpha: 0.1),
+                                color: UColors.bg,
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: UColors.warning.withValues(alpha: 0.3),
-                                ),
                               ),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: Text(
-                                      "Reconciliation Pending",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            color: UColors.warning,
-                                          ),
-                                    ),
+                                  Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        UImages.percentageSquareIcon,
+                                        height: 20,
+                                        width: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        "Next BAS Due",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                      ),
+                                    ],
                                   ),
                                   Obx(
                                     () => Text(
-                                      "${controller.reconcilePending.value} items",
+                                      "${controller.daysRemainingBAS.value} Days remaining",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyMedium
+                                          .bodySmall
                                           ?.copyWith(
-                                            color: UColors.warning,
-                                            fontWeight: FontWeight.bold,
+                                            color: UColors.textSecondary,
                                           ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+                          ],
+                        ),
+                      ),
 
-                          // Next BAS Due
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
+                      const SizedBox(height: USizes.spaceBtwSections),
+
+                      /// --- Money Goal ---
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(USizes.md),
+                        decoration: BoxDecoration(
+                          color: dark ? UColors.dark : UColors.white,
+                          borderRadius: BorderRadius.circular(
+                            USizes.cardRadiusLg,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: UColors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
                             ),
-                            decoration: BoxDecoration(
-                              color: UColors.bg,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Row(
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Row(
                                   children: [
-                                    SvgPicture.asset(
-                                      UImages.percentageSquareIcon,
-                                      height: 20,
-                                      width: 20,
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: UColors.primary.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: SvgPicture.asset(
+                                        UImages.chartIcon,
+                                        height: 20,
+                                        width: 20,
+                                      ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 12),
                                     Text(
-                                      "Next BAS Due",
+                                      "Money Goal",
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
+                                  ],
+                                ),
+                                OutlinedButton(
+                                  onPressed: () {},
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 0,
+                                    ),
+                                    side: const BorderSide(
+                                      color: UColors.borderPrimary,
+                                    ),
+                                  ),
+                                  child: const Text("Manage"),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: USizes.spaceBtwItems),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Obx(
+                                  () => Text(
+                                    "\$${controller.moneyGoalCurrent.value.toStringAsFixed(0)},402",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.headlineMedium,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6.0),
+                                  child: Obx(
+                                    () => Text(
+                                      "/\$${controller.moneyGoalTarget.value.toStringAsFixed(0)},000",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyMedium
                                           ?.copyWith(
-                                            fontWeight: FontWeight.w500,
+                                            color: UColors.textSecondary,
                                           ),
                                     ),
-                                  ],
+                                  ),
                                 ),
-                                Obx(
-                                  () => Text(
-                                    "${controller.daysRemainingBAS.value} Days remaining",
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(
-                                          color: UColors.textSecondary,
-                                        ),
+                                const Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6.0),
+                                  child: Obx(
+                                    () => Text(
+                                      "${controller.moneyGoalPercentage.value.toStringAsFixed(0)}%",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            color: UColors.success,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: USizes.spaceBtwSections),
-
-                    /// --- Money Goal ---
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(USizes.md),
-                      decoration: BoxDecoration(
-                        color: dark ? UColors.dark : UColors.white,
-                        borderRadius: BorderRadius.circular(
-                          USizes.cardRadiusLg,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: UColors.black.withValues(alpha: 0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: UColors.primary.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: SvgPicture.asset(
-                                      UImages.chartIcon,
-                                      height: 20,
-                                      width: 20,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    "Money Goal",
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
-                                  ),
-                                ],
-                              ),
-                              OutlinedButton(
-                                onPressed: () {},
-                                style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 0,
-                                  ),
-                                  side: const BorderSide(
-                                    color: UColors.borderPrimary,
-                                  ),
+                            const SizedBox(height: 8),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Obx(
+                                () => LinearProgressIndicator(
+                                  value:
+                                      controller.moneyGoalPercentage.value /
+                                      100,
+                                  backgroundColor: UColors.bg,
+                                  valueColor: const AlwaysStoppedAnimation(
+                                    UColors.success,
+                                  ), // Green bar
+                                  minHeight: 8,
                                 ),
-                                child: const Text("Manage"),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: USizes.spaceBtwItems),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Obx(
-                                () => Text(
-                                  "\$${controller.moneyGoalCurrent.value.toStringAsFixed(0)},402",
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.headlineMedium,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 6.0),
-                                child: Obx(
-                                  () => Text(
-                                    "/\$${controller.moneyGoalTarget.value.toStringAsFixed(0)},000",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: UColors.textSecondary,
-                                        ),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 6.0),
-                                child: Obx(
-                                  () => Text(
-                                    "${controller.moneyGoalPercentage.value.toStringAsFixed(0)}%",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium
-                                        ?.copyWith(
-                                          color: UColors.success,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Obx(
-                              () => LinearProgressIndicator(
-                                value:
-                                    controller.moneyGoalPercentage.value / 100,
-                                backgroundColor: UColors.bg,
-                                valueColor: const AlwaysStoppedAnimation(
-                                  UColors.success,
-                                ), // Green bar
-                                minHeight: 8,
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
 
-                    const SizedBox(height: USizes.spaceBtwSections),
-                  ],
+                      const SizedBox(height: USizes.spaceBtwSections),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }),

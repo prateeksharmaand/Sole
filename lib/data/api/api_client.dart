@@ -28,7 +28,9 @@ class ApiClient {
     connectTimeout: const Duration(seconds: 30),
     receiveTimeout: const Duration(seconds: 30),
     sendTimeout: const Duration(seconds: 30),
-    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    // Don't set Content-Type here - let Dio set it automatically based on data type
+    // (application/json for normal requests, multipart/form-data for FormData)
+    headers: {'Accept': 'application/json'},
   );
 
   /// Setup interceptors

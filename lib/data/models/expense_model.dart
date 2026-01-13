@@ -330,7 +330,7 @@ class ExpenseResponse {
 class SimpleExpenseResponse {
   final bool success;
   final String message;
-  final Map<String, dynamic>? data;
+  final dynamic data;
 
   SimpleExpenseResponse({
     required this.success,
@@ -342,7 +342,7 @@ class SimpleExpenseResponse {
     return SimpleExpenseResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
-      data: json['data'] as Map<String, dynamic>?,
+      data: json['data'] ,
     );
   }
 

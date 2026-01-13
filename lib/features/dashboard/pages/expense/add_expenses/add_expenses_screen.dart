@@ -25,12 +25,14 @@ class AddExpensesScreen extends GetView<AddExpensesController> {
         centerTitle: true,
         showBackArrow: true,
         showDivider: false,
-        title: Text(
-          "Add Expanse",
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-            color: UColors.textPrimary,
+        title: Obx(
+          () => Text(
+            controller.isEditMode.value ? "Edit Expense" : "Add Expense",
+            style: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
+              color: UColors.textPrimary,
+            ),
           ),
         ),
       ),
@@ -439,114 +441,147 @@ class ReceiptUploadBox extends GetView<AddExpensesController> {
     return Obx(
       () => Column(
         children: [
-          /// IF IMAGE SELECTED
+          // Priority 1: Show new local image if selected
           if (controller.selectedImage.value != null)
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.file(
-                    controller.selectedImage.value!,
-                    height: 185,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-
-                /// CLEAR BUTTON (TOP RIGHT)
-                Positioned(
-                  top: 6,
-                  right: 6,
-                  child: GestureDetector(
-                    onTap: controller.clearImage,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(6),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          /// ELSE SHOW DOTTED BOX
+            _buildLocalImageWidget()
+          // Priority 2: Show existing network image in edit mode
+          else if (controller.existingImageUrl.value.isNotEmpty)
+            _buildNetworkImageWidget()
+          // Priority 3: Show upload box
           else
-            GestureDetector(
-              onTap: controller.pickFromGallery,
-              child: DottedBorder(
-                borderType: RoundedRectDottedBorder(
-                  color: UColors.borderB3FF,
-                  dashGap: 4,
-                  dashWidth: 4,
-                  strokeWidth: 2,
-                  radius: const Radius.circular(12),
-                ),
-                child: SizedBox(
-                  height: 185,
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.add),
-                      SizedBox(height: USizes.defaultSpace20),
-                      Text(
-                        "Add a Photo or Receipt",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: UColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: USizes.defaultSpace20),
-                      SizedBox(
-                        height: 38,
-                        width: 130,
-                        child: UButton(
-                          onPressed: controller.pickFromGallery,
-                          label: "Browse File",
-                          textColor: UColors.primary,
-                          borderColor: UColors.primary,
-                          bgColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            _buildUploadBoxWidget(),
 
           SizedBox(height: USizes.lg),
 
           /// CAMERA BUTTON
-          GestureDetector(
-            onTap: controller.pickFromCamera,
+          _buildCameraButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocalImageWidget() {
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.file(
+            controller.selectedImage.value!,
+            height: 185,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        /// CLEAR BUTTON (TOP RIGHT)
+        Positioned(
+          top: 6,
+          right: 6,
+          child: GestureDetector(
+            onTap: controller.clearImage,
             child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black54,
+                shape: BoxShape.circle,
+              ),
+              padding: const EdgeInsets.all(6),
+              child: const Icon(Icons.close, color: Colors.white, size: 18),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNetworkImageWidget() {
+    return GestureDetector(
+      onTap: controller.pickFromGallery, // Tap to change image
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              controller.existingImageUrl.value,
+              height: 185,
               width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 185,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: UColors.bgContainerF8FA,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: UColors.borderB3FF),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.broken_image,
+                        size: 48,
+                        color: UColors.textSecondary,
+                      ),
+                      SizedBox(height: USizes.sm),
+                      Text(
+                        'Failed to load image\nTap to upload new',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          color: UColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  height: 185,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: UColors.bgContainerF8FA,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                          : null,
+                      color: UColors.primary,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+          /// OVERLAY WITH CHANGE HINT
+          Positioned(
+            bottom: 8,
+            right: 8,
+            child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: USizes.md,
-                vertical: USizes.md,
+                horizontal: USizes.sm,
+                vertical: USizes.xs,
               ),
               decoration: BoxDecoration(
-                color: UColors.primaryLightE0FF,
-                borderRadius: BorderRadius.circular(50),
+                color: Colors.black54,
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.camera_alt, color: UColors.primary),
-                  SizedBox(width: USizes.md),
+                  Icon(Icons.edit, size: 14, color: Colors.white),
+                  SizedBox(width: 4),
                   Text(
-                    "Open Camera & Take photos",
+                    'Tap to change',
                     style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      color: Colors.white,
                       fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: UColors.primary,
                     ),
                   ),
                 ],
@@ -554,6 +589,84 @@ class ReceiptUploadBox extends GetView<AddExpensesController> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUploadBoxWidget() {
+    return GestureDetector(
+      onTap: controller.pickFromGallery,
+      child: DottedBorder(
+        borderType: RoundedRectDottedBorder(
+          color: UColors.borderB3FF,
+          dashGap: 4,
+          dashWidth: 4,
+          strokeWidth: 2,
+          radius: const Radius.circular(12),
+        ),
+        child: SizedBox(
+          height: 185,
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.add),
+              SizedBox(height: USizes.defaultSpace20),
+              Text(
+                "Add a Photo or Receipt",
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                  color: UColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: USizes.defaultSpace20),
+              SizedBox(
+                height: 38,
+                width: 130,
+                child: UButton(
+                  onPressed: controller.pickFromGallery,
+                  label: "Browse File",
+                  textColor: UColors.primary,
+                  borderColor: UColors.primary,
+                  bgColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCameraButton() {
+    return GestureDetector(
+      onTap: controller.pickFromCamera,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: USizes.md,
+          vertical: USizes.md,
+        ),
+        decoration: BoxDecoration(
+          color: UColors.primaryLightE0FF,
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.camera_alt, color: UColors.primary),
+            SizedBox(width: USizes.md),
+            Text(
+              "Open Camera & Take photos",
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: UColors.primary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
